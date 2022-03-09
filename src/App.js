@@ -1,16 +1,22 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Signup from "./components/Signup";
-import { Container } from "@mui/material";
+import { Container, Switch } from "@mui/material";
+import { Route, Router } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import Signup from "./components/Signup";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <AuthProvider>
-      <Container>
-        <Signup />
-      </Container>
-    </AuthProvider>
+    <Container>
+      <Router>
+        <AuthProvider>
+          <Switch>
+            <Route path="/signup" component={Signup} />
+          </Switch>
+        </AuthProvider>
+      </Router>
+      <Navbar />
+    </Container>
   );
 }
 
