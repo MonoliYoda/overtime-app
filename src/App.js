@@ -1,18 +1,27 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Navbar from "./components/Navbar";
-import { Route, Router } from "react-router-dom";
 import { Container, Switch } from "@mui/material";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import Signup from "./components/Signup";
+import Navbar from "./components/Navbar";
+import Dashboard from "./components/Dashboard";
+import Login from "./components/Login";
+import Logout from "./components/Logout";
 
 function App() {
   return (
-    <Container>
-      <Router>
-        <Switch>
-          <Route path="/signup" component={Signup} />
-        </Switch>
-      </Router>
-      <Navbar />
+    <Container sx={{}}>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route exact path="/" element={<Dashboard />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+          </Routes>
+        </Router>
+        <Navbar />
+      </AuthProvider>
     </Container>
   );
 }
