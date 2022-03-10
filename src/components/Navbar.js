@@ -1,6 +1,6 @@
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import React, { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/FirebaseContext";
 import HomeIcon from "@mui/icons-material/Home";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
