@@ -8,7 +8,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 export default function Navbar() {
   const [value, setValue] = useState();
-  const { currentUser } = useAuth();
+  const { currentUser, testDatabase } = useAuth();
 
   if (currentUser) {
     return (
@@ -27,6 +27,7 @@ export default function Navbar() {
             label="Home"
             value="home"
             icon={<HomeIcon />}
+            onClick={testDatabase}
           />
           <BottomNavigationAction
             label="History"
