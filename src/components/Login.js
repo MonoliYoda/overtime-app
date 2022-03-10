@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Alert,
-  Box,
   Button,
   Card,
   CardActions,
@@ -13,11 +12,10 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-export default function Signup() {
+export default function Login() {
   const [email, setEmail] = useState("");
-  const [password1, setPassword1] = useState("");
-  const [password2, setPassword2] = useState("");
-  const { signup, currentUser } = useAuth();
+  const [password, setPassword] = useState("");
+  const { login, currentUser } = useAuth();
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
@@ -29,17 +27,11 @@ export default function Signup() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (password1 === password2) {
-      setErrorMsg("");
-      try {
-        await signup(email, password1);
-        navigate("/");
-      } catch (e) {
-        console.log(e);
-        setErrorMsg("Failed creating account.");
-      }
-    } else {
-      setErrorMsg("Passwords do not match!");
+    try {
+      await login(email, password);
+      navigate("/");
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -66,7 +58,7 @@ export default function Signup() {
         }}
       >
         <Typography variant="h2" component="h2">
-          Sign Up!
+          Log In
         </Typography>
         {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
         {currentUser && (
@@ -81,30 +73,22 @@ export default function Signup() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
-          id="password1"
+          id="password"
           label="Password"
           type="password"
           variant="standard"
-          value={password1}
-          onChange={(e) => setPassword1(e.target.value)}
-        />
-        <TextField
-          id="password2"
-          label="Repeat password"
-          type="password"
-          variant="standard"
-          value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
       </CardContent>
       <CardActions>
-        <Button onClick={handleSubmit}>Sign Up</Button>
+        <Button onClick={handleSubmit}>Log In</Button>
       </CardActions>
       <CardActions>
-        <Typography>
-          Already have an account?&nbsp;
-          <Link component={RouterLink} to="/login">
-            Log In
+        <Typography variant="body1">
+          Don't have an account yet?&nbsp;
+          <Link component={RouterLink} to="/signup">
+            Sign up
           </Link>
         </Typography>
       </CardActions>
