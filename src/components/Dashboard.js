@@ -17,6 +17,7 @@ import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import withContext from "../withContext";
+import ActiveJobCard from "./ActiveJobCard";
 import NewJobMenu from "./NewJobMenu";
 
 function Dashboard(props) {
@@ -80,39 +81,7 @@ function Dashboard(props) {
         columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         sx={{ margin: "2rem 0", height: "calc(100vh - 150px)" }}
       >
-        <Grid item xs={12}>
-          <Card variant="outlined">
-            <CardHeader
-              title={
-                <Stack>
-                  <Typography variant="h4">
-                    {activeJob && activeJob.name}
-                  </Typography>
-                  <Typography>12/03/2022</Typography>
-                </Stack>
-              }
-              action={
-                <IconButton>
-                  <MoreHoriz />
-                </IconButton>
-              }
-            ></CardHeader>
-            <Grid container alignItems="center">
-              {/* divider={<Divider orientation="vertical" flexItem />} */}
-              <Grid item xs={8}>
-                <List>
-                  <ListItem>ProjectName</ListItem>
-                  <ListItem>Start Time</ListItem>
-                  <ListItem>Start Time</ListItem>
-                  <ListItem>Overtime</ListItem>
-                </List>
-              </Grid>
-              <Grid item xs={4}>
-                <CircularProgress variant="determinate" value={75} />
-              </Grid>
-            </Grid>
-          </Card>
-        </Grid>
+        <ActiveJobCard activeJob={activeJob} />
         <Grid item xs={12}>
           <Box display="flex" justifyContent="center">
             <Button variant="contained">STOP</Button>
