@@ -42,37 +42,6 @@ function Dashboard(props) {
     setActiveJob(openJobs[0]);
   }, []);
 
-  function strfDate(timestamp) {
-    const date = new Date(timestamp.toDate());
-    return date.toLocaleDateString();
-  }
-
-  function strfTime(timestamp) {
-    try {
-      const date = new Date(timestamp.toDate());
-      return date.toLocaleTimeString();
-    } catch (e) {
-      return "-";
-    }
-  }
-
-  function strfRuntime(start, end) {
-    try {
-      const t1 = new Date(start.toDate());
-      const t2 = new Date(end.toDate());
-      const diff = (t2 - t1) / 1000;
-      var hrs = Math.floor(diff / (60 * 60));
-      var leftSec = diff - hrs * 60 * 60;
-      var mins = Math.floor(leftSec / 60);
-      if (mins < 10) {
-        mins = "0" + mins;
-      }
-      return `Worktime: ${hrs}:${mins}`;
-    } catch (e) {
-      return "-";
-    }
-  }
-
   return (
     <>
       <Grid
@@ -103,14 +72,14 @@ function Dashboard(props) {
                     <ListItem key={job.id}>
                       <ListItemText
                         primary={`${job.name}`}
-                        secondary={`${strfTime(job.startTime)} - ${strfTime(
-                          job.endTime
-                        )}`}
+                        secondary={`${fb.strfTime(
+                          job.startTime
+                        )} - ${fb.strfTime(job.endTime)}`}
                       ></ListItemText>
                       <ListItemText
                         sx={{ textAlign: "right" }}
-                        primary={strfDate(job.startTime)}
-                        secondary={strfRuntime(job.startTime, job.endTime)}
+                        primary={fb.strfDate(job.startTime)}
+                        secondary={fb.strfRuntime(job.startTime, job.endTime)}
                         edge="end"
                       ></ListItemText>
                     </ListItem>
