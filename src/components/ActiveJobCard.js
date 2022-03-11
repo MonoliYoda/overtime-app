@@ -11,41 +11,52 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import withContext from "../withContext";
 
-export default function ActiveJobCard({ activeJob }) {
-  return (
-    <Grid item xs={12}>
-      <Card variant="outlined">
-        <CardHeader
-          title={
-            <Stack>
-              <Typography variant="h4">
-                {activeJob && activeJob.name}
-              </Typography>
-              <Typography>12/03/2022</Typography>
-            </Stack>
-          }
-          action={
-            <IconButton>
-              <MoreHoriz />
-            </IconButton>
-          }
-        ></CardHeader>
-        <Grid container alignItems="center">
-          {/* divider={<Divider orientation="vertical" flexItem />} */}
-          <Grid item xs={8}>
-            <List>
-              <ListItem>ProjectName</ListItem>
-              <ListItem>Start Time</ListItem>
-              <ListItem>Start Time</ListItem>
-              <ListItem>Overtime</ListItem>
-            </List>
+function ActiveJobCard(props) {
+  const fb = { ...props.value };
+  const activeJob = { ...props.activeJob };
+  if (activeJob) {
+    return (
+      <Grid item xs={12}>
+        <Card variant="outlined">
+          <CardHeader
+            title={
+              <Stack>
+                <Typography variant="h4">
+                  {activeJob && activeJob.name}
+                </Typography>
+                <Typography>
+                  {activeJob.startTime && fb.strfDate(activeJob.startTime)}
+                </Typography>
+              </Stack>
+            }
+            action={
+              <IconButton>
+                <MoreHoriz />
+              </IconButton>
+            }
+          ></CardHeader>
+          <Grid container alignItems="center">
+            {/* divider={<Divider orientation="vertical" flexItem />} */}
+            <Grid item xs={8}>
+              <List>
+                <ListItem>project name</ListItem>
+                <ListItem>Start Time</ListItem>
+                <ListItem>Start Time</ListItem>
+                <ListItem>Overtime</ListItem>
+              </List>
+            </Grid>
+            <Grid item xs={4}>
+              <CircularProgress variant="determinate" value={75} />
+            </Grid>
           </Grid>
-          <Grid item xs={4}>
-            <CircularProgress variant="determinate" value={75} />
-          </Grid>
-        </Grid>
-      </Card>
-    </Grid>
-  );
+        </Card>
+      </Grid>
+    );
+  } else {
+    return null;
+  }
 }
+
+export default withContext(ActiveJobCard);
