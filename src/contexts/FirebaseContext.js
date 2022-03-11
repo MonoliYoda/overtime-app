@@ -60,8 +60,14 @@ export function FirebaseProvider({ children }) {
     );
     const openJobs = await getDocs(q);
     const result = [];
-    openJobs.forEach((job) => result.push({ id: job.id, ...job.data() }));
-    console.log(result);
+    openJobs.forEach(async (job) => {
+      let jobData = await job.data();
+      let project = null;
+      if (jobData.project) {
+        project = await (await getDoc(jobData.project)).data();
+      }
+      result.push({ id: job.id, ...job.data(), project: project });
+    });
     return result;
   }
 
