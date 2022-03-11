@@ -5,8 +5,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
 import SettingsIcon from "@mui/icons-material/Settings";
+import withContext from "../withContext";
 
-export default function Navbar() {
+function Navbar() {
   const [value, setValue] = useState();
   const { currentUser, testDatabase } = useAuth();
 
@@ -27,7 +28,6 @@ export default function Navbar() {
             label="Home"
             value="home"
             icon={<HomeIcon />}
-            onClick={testDatabase}
           />
           <BottomNavigationAction
             label="History"
@@ -48,6 +48,8 @@ export default function Navbar() {
       </Paper>
     );
   } else {
-    return "";
+    return null;
   }
 }
+
+export default withContext(Navbar);
