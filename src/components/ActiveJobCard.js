@@ -15,7 +15,8 @@ import withContext from "../withContext";
 
 function ActiveJobCard(props) {
   const fb = { ...props.value };
-  const activeJob = { ...props.activeJob };
+  const activeJob = props.activeJob;
+  console.log(activeJob);
   if (activeJob) {
     return (
       <Grid item xs={12}>
@@ -26,9 +27,7 @@ function ActiveJobCard(props) {
                 <Typography variant="h4">
                   {activeJob && activeJob.name}
                 </Typography>
-                <Typography>
-                  {activeJob.startTime && fb.strfDate(activeJob.startTime)}
-                </Typography>
+                <Typography>{fb.strfDate(activeJob.startTime)}</Typography>
               </Stack>
             }
             action={
@@ -41,8 +40,10 @@ function ActiveJobCard(props) {
             {/* divider={<Divider orientation="vertical" flexItem />} */}
             <Grid item xs={8}>
               <List>
-                <ListItem>project name</ListItem>
-                <ListItem>Start Time</ListItem>
+                <ListItem>
+                  {activeJob.project && activeJob.project.name}
+                </ListItem>
+                <ListItem>{fb.strfTime(activeJob.startTime)}</ListItem>
                 <ListItem>Start Time</ListItem>
                 <ListItem>Overtime</ListItem>
               </List>

@@ -38,7 +38,7 @@ function Dashboard(props) {
     const jobs = await fb.getUserJobs();
     setJobList(jobs);
 
-    const openJobs = await fb.getOpenJob();
+    const openJobs = await fb.getOpenJobs();
     setActiveJob(openJobs[0]);
   }, []);
 

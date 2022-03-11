@@ -13,6 +13,7 @@ import {
   query,
   where,
   orderBy,
+  limit,
 } from "firebase/firestore";
 
 const FirebaseContext = React.createContext();
@@ -51,29 +52,38 @@ export function FirebaseProvider({ children }) {
     userJobs.forEach((job) => result.push({ id: job.id, ...job.data() }));
     return result;
   }
-  async function getOpenJob() {
+  async function getOpenJobs() {
     console.log("getOpenJob");
     const q = query(
       collection(db, "users", currentUser.uid, "jobs"),
-      where("endTime", "==", null)
-      //  orderBy("startTime")
+      where("endTime", "==", null),
+      orderBy("startTime", "desc")
+      //limit(1)
     );
     const openJobs = await getDocs(q);
-    const result = [];
-    openJobs.forEach(async (job) => {
-      let jobData = await job.data();
-      let project = null;
-      if (jobData.project) {
-        project = await (await getDoc(jobData.project)).data();
-      }
-      result.push({ id: job.id, ...job.data(), project: project });
+    let result = [];
+    openJobs.forEach((job) => {
+      result.push({ id: job.id, ...job.data() });
     });
-    return result;
+    return await Promise.all(
+      result.map(async (job) => {
+        if (job.project) {
+          const project = await getDoc(job.project);
+          return { ...job, project: project.data() };
+        } else {
+          return { ...job, project: null };
+        }
+      })
+    );
   }
 
   function strfDate(timestamp) {
-    const date = new Date(timestamp.toDate());
-    return date.toLocaleDateString();
+    try {
+      const date = new Date(timestamp.toDate());
+      return date.toLocaleDateString();
+    } catch (e) {
+      return "-";
+    }
   }
   function strfTime(timestamp) {
     try {
@@ -116,7 +126,7 @@ export function FirebaseProvider({ children }) {
     logout,
     getUserJobs,
     getUserData,
-    getOpenJob,
+    getOpenJobs,
     strfDate,
     strfTime,
     strfRuntime,
