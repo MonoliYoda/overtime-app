@@ -44,7 +44,6 @@ export function FirebaseProvider({ children }) {
   }
 
   async function getUserJobs() {
-    console.log("Fetching jobs...");
     const userJobs = await getDocs(
       collection(db, "users", currentUser.uid, "jobs")
     );
@@ -52,18 +51,43 @@ export function FirebaseProvider({ children }) {
     userJobs.forEach((job) => result.push({ id: job.id, ...job.data() }));
     return result;
   }
+
   async function getOpenJobs() {
-    console.log("getOpenJob");
     const q = query(
       collection(db, "users", currentUser.uid, "jobs"),
       where("endTime", "==", null),
       orderBy("startTime", "desc")
       //limit(1)
     );
-    const openJobs = await getDocs(q);
+    const docs = await getDocs(q);
     let result = [];
-    openJobs.forEach((job) => {
-      result.push({ id: job.id, ...job.data() });
+    docs.forEach((doc) => {
+      result.push({ id: doc.id, ...doc.data() });
+    });
+    return await Promise.all(
+      result.map(async (job) => {
+        if (job.project) {
+          const project = await getDoc(job.project);
+          return { ...job, project: project.data() };
+        } else {
+          return { ...job, project: null };
+        }
+      })
+    );
+  }
+
+  async function getCompletedJobs(limit = 100) {
+    const q = query(
+      collection(db, "users", currentUser.uid, "jobs"),
+      where("endTime", "!=", null),
+      where("startTime", "!=", null),
+      orderBy("startTime", "desc"),
+      limit(limit)
+    );
+    const docs = await getDocs(q);
+    let result = [];
+    docs.forEach((doc) => {
+      result.push({ id: doc.id, ...doc.data() });
     });
     return await Promise.all(
       result.map(async (job) => {
