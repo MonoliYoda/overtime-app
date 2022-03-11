@@ -13,6 +13,7 @@ import {
   query,
   where,
   orderBy,
+  limit,
 } from "firebase/firestore";
 
 const FirebaseContext = React.createContext();
@@ -43,7 +44,6 @@ export function FirebaseProvider({ children }) {
   }
 
   async function getUserJobs() {
-    console.log("Fetching jobs...");
     const userJobs = await getDocs(
       collection(db, "users", currentUser.uid, "jobs")
     );
@@ -51,18 +51,55 @@ export function FirebaseProvider({ children }) {
     userJobs.forEach((job) => result.push({ id: job.id, ...job.data() }));
     return result;
   }
-  async function getOpenJob() {
-    console.log("getOpenJob");
+
+  async function getOpenJobs() {
     const q = query(
       collection(db, "users", currentUser.uid, "jobs"),
-      where("endTime", "==", null)
-      //  orderBy("startTime")
+      where("endTime", "==", null),
+      orderBy("startTime", "desc")
+      //limit(1)
     );
-    const openJobs = await getDocs(q);
-    const result = [];
-    openJobs.forEach((job) => result.push({ id: job.id, ...job.data() }));
-    console.log(result);
-    return result;
+    const docs = await getDocs(q);
+    let result = [];
+    docs.forEach((doc) => {
+      result.push({ id: doc.id, ...doc.data() });
+    });
+    return await Promise.all(
+      result.map(async (job) => {
+        if (job.project) {
+          const project = await getDoc(job.project);
+          return { ...job, project: project.data() };
+        } else {
+          return { ...job, project: null };
+        }
+      })
+    );
+  }
+
+  async function getCompletedJobs(max = 100) {
+    const q = query(
+      collection(db, "users", currentUser.uid, "jobs"),
+      //where("endTime", "!=", null),
+      orderBy("startTime", "desc"),
+      limit(max)
+    );
+    const docs = await getDocs(q);
+    let result = [];
+    docs.forEach((doc) => {
+      if (doc.data().endTime) {
+        result.push({ id: doc.id, ...doc.data() });
+      }
+    });
+    return await Promise.all(
+      result.map(async (job) => {
+        if (job.project) {
+          const project = await getDoc(job.project);
+          return { ...job, project: project.data() };
+        } else {
+          return { ...job, project: null };
+        }
+      })
+    );
   }
 
   useEffect(() => {
@@ -80,7 +117,8 @@ export function FirebaseProvider({ children }) {
     logout,
     getUserJobs,
     getUserData,
-    getOpenJob,
+    getOpenJobs,
+    getCompletedJobs,
   };
   return (
     <FirebaseContext.Provider value={value}>
