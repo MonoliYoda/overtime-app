@@ -12,11 +12,11 @@ import {
 } from "@mui/material";
 import React from "react";
 import withContext from "../withContext";
+import { strfDate, strfTime, strfRuntime } from "../util/utils";
 
 function ActiveJobCard(props) {
   const fb = { ...props.value };
   const activeJob = props.activeJob;
-  console.log(activeJob);
   if (activeJob) {
     return (
       <Grid item xs={12}>
@@ -27,7 +27,7 @@ function ActiveJobCard(props) {
                 <Typography variant="h4">
                   {activeJob && activeJob.name}
                 </Typography>
-                <Typography>{fb.strfDate(activeJob.startTime)}</Typography>
+                <Typography>{strfDate(activeJob.startTime)}</Typography>
               </Stack>
             }
             action={
@@ -43,7 +43,7 @@ function ActiveJobCard(props) {
                 <ListItem>
                   {activeJob.project && activeJob.project.name}
                 </ListItem>
-                <ListItem>{fb.strfTime(activeJob.startTime)}</ListItem>
+                <ListItem>{strfTime(activeJob.startTime)}</ListItem>
                 <ListItem>Start Time</ListItem>
                 <ListItem>Overtime</ListItem>
               </List>

@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import withContext from "../withContext";
 import ActiveJobCard from "./ActiveJobCard";
 import NewJobMenu from "./NewJobMenu";
+import { strfDate, strfTime, strfRuntime } from "../util/utils";
 
 function Dashboard(props) {
   const navigate = useNavigate();
@@ -72,14 +73,14 @@ function Dashboard(props) {
                     <ListItem key={job.id}>
                       <ListItemText
                         primary={`${job.name}`}
-                        secondary={`${fb.strfTime(
-                          job.startTime
-                        )} - ${fb.strfTime(job.endTime)}`}
+                        secondary={`${strfTime(job.startTime)} - ${strfTime(
+                          job.endTime
+                        )}`}
                       ></ListItemText>
                       <ListItemText
                         sx={{ textAlign: "right" }}
-                        primary={fb.strfDate(job.startTime)}
-                        secondary={fb.strfRuntime(job.startTime, job.endTime)}
+                        primary={strfDate(job.startTime)}
+                        secondary={strfRuntime(job.startTime, job.endTime)}
                         edge="end"
                       ></ListItemText>
                     </ListItem>
