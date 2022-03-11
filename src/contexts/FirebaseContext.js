@@ -7,12 +7,12 @@ import {
 } from "firebase/auth";
 import {
   collection,
-  addDoc,
   getDocs,
-  updateDoc,
+  getDoc,
+  doc,
   query,
   where,
-  documentId,
+  orderBy,
 } from "firebase/firestore";
 
 const FirebaseContext = React.createContext();
@@ -24,7 +24,6 @@ export function useAuth() {
 export function FirebaseProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
-  const [daysCollection, setDaysCollection] = useState();
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -38,16 +37,32 @@ export function FirebaseProvider({ children }) {
     return signOut(auth);
   }
 
-  async function testDatabase() {
-    const u = collection(db, "users");
-    console.log(u);
-    const querySnapshot = await getDocs(u);
-    console.log(querySnapshot);
-    querySnapshot.forEach((doc) => {
-      console.log(`${doc.id} => ${doc.data()}`);
-    });
-    const usersCollection = collection(db, "users");
-    console.log("usersCollection:", usersCollection);
+  async function getUserData() {
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    return userDoc.data();
+  }
+
+  async function getUserJobs() {
+    console.log("Fetching jobs...");
+    const userJobs = await getDocs(
+      collection(db, "users", currentUser.uid, "jobs")
+    );
+    const result = [];
+    userJobs.forEach((job) => result.push({ id: job.id, ...job.data() }));
+    return result;
+  }
+  async function getOpenJob() {
+    console.log("getOpenJob");
+    const q = query(
+      collection(db, "users", currentUser.uid, "jobs"),
+      where("endTime", "==", null)
+      //  orderBy("startTime")
+    );
+    const openJobs = await getDocs(q);
+    const result = [];
+    openJobs.forEach((job) => result.push({ id: job.id, ...job.data() }));
+    console.log(result);
+    return result;
   }
 
   useEffect(() => {
@@ -63,7 +78,9 @@ export function FirebaseProvider({ children }) {
     signup,
     login,
     logout,
-    testDatabase,
+    getUserJobs,
+    getUserData,
+    getOpenJob,
   };
   return (
     <FirebaseContext.Provider value={value}>
@@ -71,3 +88,5 @@ export function FirebaseProvider({ children }) {
     </FirebaseContext.Provider>
   );
 }
+
+export { FirebaseContext };
