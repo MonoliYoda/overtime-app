@@ -51,7 +51,9 @@ function Dashboard(props) {
         columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         sx={{ margin: "2rem 0", height: "calc(100vh - 150px)" }}
       >
-        <ActiveJobCard activeJob={activeJob} />
+        <Grid item xs={12}>
+          <ActiveJobCard activeJob={activeJob} />
+        </Grid>
         <Grid item xs={12}>
           <Box display="flex" justifyContent="center">
             <Button variant="contained">STOP</Button>
