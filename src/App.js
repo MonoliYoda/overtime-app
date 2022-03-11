@@ -1,7 +1,7 @@
 import "./App.css";
 import { Container, Switch } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
+import { FirebaseProvider } from "./contexts/FirebaseContext";
 import Signup from "./components/Signup";
 import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
@@ -11,7 +11,7 @@ import Logout from "./components/Logout";
 function App() {
   return (
     <Container sx={{}}>
-      <AuthProvider>
+      <FirebaseProvider>
         <Router>
           <Routes>
             <Route exact path="/" element={<Dashboard />} />
@@ -21,7 +21,7 @@ function App() {
           </Routes>
         </Router>
         <Navbar />
-      </AuthProvider>
+      </FirebaseProvider>
     </Container>
   );
 }

@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/FirebaseContext";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 export default function Signup() {
