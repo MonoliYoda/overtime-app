@@ -76,18 +76,19 @@ export function FirebaseProvider({ children }) {
     );
   }
 
-  async function getCompletedJobs(limit = 100) {
+  async function getCompletedJobs(max = 100) {
     const q = query(
       collection(db, "users", currentUser.uid, "jobs"),
-      where("endTime", "!=", null),
-      where("startTime", "!=", null),
+      //where("endTime", "!=", null),
       orderBy("startTime", "desc"),
-      limit(limit)
+      limit(max)
     );
     const docs = await getDocs(q);
     let result = [];
     docs.forEach((doc) => {
-      result.push({ id: doc.id, ...doc.data() });
+      if (doc.data().endTime) {
+        result.push({ id: doc.id, ...doc.data() });
+      }
     });
     return await Promise.all(
       result.map(async (job) => {
@@ -117,6 +118,7 @@ export function FirebaseProvider({ children }) {
     getUserJobs,
     getUserData,
     getOpenJobs,
+    getCompletedJobs,
   };
   return (
     <FirebaseContext.Provider value={value}>

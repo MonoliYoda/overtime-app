@@ -19,7 +19,8 @@ import { useNavigate } from "react-router-dom";
 import withContext from "../withContext";
 import ActiveJobCard from "./ActiveJobCard";
 import NewJobMenu from "./NewJobMenu";
-import { strfDate, strfTime, strfRuntime } from "../util/utils";
+
+import RecentJobs from "./RecentJobs";
 
 function Dashboard(props) {
   const navigate = useNavigate();
@@ -60,36 +61,7 @@ function Dashboard(props) {
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <Card>
-            <CardHeader
-              title={
-                userInfo && (
-                  <Typography variant="h4">{userInfo.name}</Typography>
-                )
-              }
-            ></CardHeader>
-            <List>
-              {jobList &&
-                jobList.map((job) => {
-                  return (
-                    <ListItem key={job.id}>
-                      <ListItemText
-                        primary={`${job.name}`}
-                        secondary={`${strfTime(job.startTime)} - ${strfTime(
-                          job.endTime
-                        )}`}
-                      ></ListItemText>
-                      <ListItemText
-                        sx={{ textAlign: "right" }}
-                        primary={strfDate(job.startTime)}
-                        secondary={strfRuntime(job.startTime, job.endTime)}
-                        edge="end"
-                      ></ListItemText>
-                    </ListItem>
-                  );
-                })}
-            </List>
-          </Card>
+          <RecentJobs />
         </Grid>
       </Grid>
       <NewJobMenu></NewJobMenu>

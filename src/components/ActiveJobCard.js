@@ -19,7 +19,7 @@ function ActiveJobCard(props) {
   const activeJob = props.activeJob;
   if (activeJob) {
     return (
-      <Card variant="outlined">
+      <Card elevation={4}>
         <CardHeader
           title={
             <Stack>
