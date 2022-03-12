@@ -17,6 +17,7 @@ function Dashboard(props) {
       console.log("Not logged in, redirecting.");
       navigate("/login");
     }
+    fb.fetchUserJobs();
   }, []);
 
   useEffect(() => {

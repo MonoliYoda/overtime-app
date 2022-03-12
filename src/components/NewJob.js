@@ -25,7 +25,7 @@ import { Timestamp } from "firebase/firestore";
 function NewJob(props) {
   const fb = { ...props.value };
   const [name, setName] = useState("");
-  const [project, setProject] = useState();
+  const [project, setProject] = useState(null);
   const [userProjects, setUserProjects] = useState([]);
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState(null);
@@ -46,7 +46,7 @@ function NewJob(props) {
 
   useEffect(() => {
     async function fetchProjects() {
-      fb.getUserProjects();
+      fb.fetchUserProjects();
     }
     function setDateToNow() {
       setStartTime(new Date());
@@ -75,7 +75,7 @@ function NewJob(props) {
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       open={true}
     >
-      <Card sx={{ maxWidth: "35rem" }}>
+      <Card sx={{ maxWidth: "32rem" }}>
         <CardHeader title="New Job" />
         <CardContent>
           <Box
@@ -92,20 +92,22 @@ function NewJob(props) {
                   label="Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  sx={{ width: "50%" }}
                 />
                 <Autocomplete
                   value={project}
                   onChange={(e, newValue) => {
                     if (typeof newValue === "string") {
                       setProject({
-                        title: newValue,
+                        name: newValue,
                       });
                     } else if (newValue && newValue.inputValue) {
                       // Create a new value from the user input
-                      setProject({
-                        title: newValue.inputValue,
-                      });
-                      console.log("Thiis is where we create new project");
+                      const newProject = {
+                        name: newValue.inputValue,
+                      };
+                      setProject(newProject);
+                      fb.addNewProject(newProject);
                     } else {
                       setProject(newValue);
                     }
@@ -121,7 +123,7 @@ function NewJob(props) {
                     if (inputValue !== "" && !isExisting) {
                       filtered.push({
                         inputValue,
-                        title: `Add "${inputValue}"`,
+                        name: `Add "${inputValue}"`,
                       });
                     }
 
@@ -147,10 +149,10 @@ function NewJob(props) {
                   renderOption={(props, option) => (
                     <li {...props}>{option.name}</li>
                   )}
-                  sx={{ width: 300 }}
+                  sx={{ width: "50%", display: "inline-block" }}
                   freeSolo
                   renderInput={(params) => (
-                    <TextField {...params} label="Project" />
+                    <TextField {...params} label="Project" variant="standard" />
                   )}
                 />
               </Grid>
@@ -202,19 +204,14 @@ function NewJob(props) {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControl variant="standard" sx={{ width: "45%" }}>
-                  <InputLabel id="scheme-select-label">
-                    Overtime scheme
-                  </InputLabel>
-                  <Select
-                    labelId="scheme-select-label"
-                    value={ovtScheme}
-                    onChange={(e) => setOvtScheme(e.target.value)}
-                  >
-                    <MenuItem value={10}>Commercial</MenuItem>
-                    <MenuItem value={20}>Film</MenuItem>
-                  </Select>
-                </FormControl>
+                <Autocomplete
+                  freeSolo
+                  options={clients}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Client" variant="standard" />
+                  )}
+                  sx={{ width: "50%", display: "inline-block" }}
+                />
                 <TextField
                   variant="standard"
                   label="Standard work hours"
@@ -231,10 +228,14 @@ function NewJob(props) {
                   onChange={(e) => setNotes(e.target.value)}
                 />
               </Grid>
-              <Button variant="contained" onClick={handleSubmit}>
-                OK
-              </Button>
-              <Button onClick={() => fb.getUserProjects()}>Fetch!</Button>
+              <Grid item xs={12} display="flex" justifyContent="space-between">
+                <Button variant="outlined" onClick={() => navigate("/")}>
+                  Cancel
+                </Button>
+                <Button variant="contained" onClick={handleSubmit}>
+                  OK
+                </Button>
+              </Grid>
             </Grid>
           </Box>
         </CardContent>

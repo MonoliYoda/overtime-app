@@ -83,7 +83,6 @@ export function FirebaseProvider({ children }) {
   }
 
   async function addNewJob(data) {
-    console.log(data);
     if (data.project) {
       // Convert project object to actual doc reference
       data.project = doc(
@@ -101,11 +100,20 @@ export function FirebaseProvider({ children }) {
     return docRef;
   }
 
-  async function getUserProjects() {
+  async function fetchUserProjects() {
     const q = query(collection(db, "users", currentUser.uid, "projects"));
     let projects = await fetchAndParse(q);
     setUserProjects(projects);
     return projects;
+  }
+
+  async function addNewProject(data) {
+    const docRef = await addDoc(
+      collection(db, "users", currentUser.uid, "projects"),
+      data
+    );
+    fetchUserProjects();
+    return docRef;
   }
 
   useEffect(() => {
@@ -128,7 +136,8 @@ export function FirebaseProvider({ children }) {
     openJobs,
     completedJobs,
     addNewJob,
-    getUserProjects,
+    fetchUserProjects,
+    addNewProject,
   };
   return (
     <FirebaseContext.Provider value={value}>
