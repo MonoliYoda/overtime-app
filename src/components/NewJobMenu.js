@@ -9,8 +9,8 @@ export default function NewJobMenu() {
     { icon: <CreateNewFolder />, name: "Project" },
   ];
   const navigate = useNavigate();
+
   function openNewJob(e) {
-    console.log("first");
     navigate("/new");
   }
 

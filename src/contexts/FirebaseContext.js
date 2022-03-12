@@ -26,6 +26,7 @@ export function useAuth() {
 export function FirebaseProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [userProjects, setUserProjects] = useState([]);
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -104,10 +105,33 @@ export function FirebaseProvider({ children }) {
   }
 
   async function addNewJob(data) {
+    console.log(data);
+    if (data.project) {
+      // Convert project object to actual doc reference
+      data.project = doc(
+        db,
+        "users",
+        currentUser.uid,
+        "projects",
+        data.project.id
+      );
+    }
     const docRef = await addDoc(
       collection(db, "users", currentUser.uid, "jobs"),
       data
     );
+    return docRef;
+  }
+
+  async function getUserProjects() {
+    const q = query(collection(db, "users", currentUser.uid, "projects"));
+    const docs = await getDocs(q);
+    let result = [];
+    docs.forEach((doc) => {
+      result.push({ id: doc.id, ...doc.data() });
+    });
+    setUserProjects(result);
+    return result;
   }
 
   useEffect(() => {
@@ -120,6 +144,7 @@ export function FirebaseProvider({ children }) {
 
   const value = {
     currentUser,
+    userProjects,
     signup,
     login,
     logout,
@@ -128,6 +153,7 @@ export function FirebaseProvider({ children }) {
     getOpenJobs,
     getCompletedJobs,
     addNewJob,
+    getUserProjects,
   };
   return (
     <FirebaseContext.Provider value={value}>
