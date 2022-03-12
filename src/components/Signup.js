@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Alert,
-  Box,
   Button,
   Card,
   CardActions,
@@ -10,19 +9,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useAuth } from "../contexts/FirebaseContext";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import withContext from "../withContext";
 
-export default function Signup() {
+function Signup(props) {
+  const fb = { ...props.value };
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
-  const { signup, currentUser } = useAuth();
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentUser) {
+    if (fb.currentUser) {
       navigate("/");
     }
   }, []);
@@ -32,7 +31,7 @@ export default function Signup() {
     if (password1 === password2) {
       setErrorMsg("");
       try {
-        await signup(email, password1);
+        await fb.signup(email, password1);
         navigate("/");
       } catch (e) {
         console.log(e);
@@ -69,8 +68,8 @@ export default function Signup() {
           Sign Up!
         </Typography>
         {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-        {currentUser && (
-          <Alert severity="success">{`Successfully logged in as ${currentUser.email}`}</Alert>
+        {fb.currentUser && (
+          <Alert severity="success">{`Successfully logged in as ${fb.currentUser.email}`}</Alert>
         )}
         <TextField
           id="email"
@@ -111,3 +110,5 @@ export default function Signup() {
     </Card>
   );
 }
+
+export default withContext(Signup);

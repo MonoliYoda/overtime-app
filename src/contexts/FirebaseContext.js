@@ -11,9 +11,7 @@ import {
   getDoc,
   doc,
   query,
-  where,
   orderBy,
-  limit,
   addDoc,
 } from "firebase/firestore";
 
@@ -27,6 +25,8 @@ export function FirebaseProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
   const [userProjects, setUserProjects] = useState([]);
+  const [userJobs, setUserJobs] = useState([]);
+  const [userClients, setUserClients] = useState([]);
 
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -45,55 +45,23 @@ export function FirebaseProvider({ children }) {
     return userDoc.data();
   }
 
-  async function getUserJobs() {
-    const userJobs = await getDocs(
-      collection(db, "users", currentUser.uid, "jobs")
-    );
-    const result = [];
-    userJobs.forEach((job) => result.push({ id: job.id, ...job.data() }));
-    return result;
-  }
-
-  async function getOpenJobs() {
-    const q = query(
-      collection(db, "users", currentUser.uid, "jobs"),
-      where("endTime", "==", null),
-      orderBy("startTime", "desc")
-      //limit(1)
-    );
-    const docs = await getDocs(q);
+  async function fetchAndParse(query) {
+    const docs = await getDocs(query);
     let result = [];
     docs.forEach((doc) => {
       result.push({ id: doc.id, ...doc.data() });
     });
-    return await Promise.all(
-      result.map(async (job) => {
-        if (job.project) {
-          const project = await getDoc(job.project);
-          return { ...job, project: project.data() };
-        } else {
-          return { ...job, project: null };
-        }
-      })
-    );
+    return result;
   }
 
-  async function getCompletedJobs(max = 100) {
+  async function fetchUserJobs() {
     const q = query(
       collection(db, "users", currentUser.uid, "jobs"),
-      //where("endTime", "!=", null),
-      orderBy("startTime", "desc"),
-      limit(max)
+      orderBy("startTime", "desc")
     );
-    const docs = await getDocs(q);
-    let result = [];
-    docs.forEach((doc) => {
-      if (doc.data().endTime) {
-        result.push({ id: doc.id, ...doc.data() });
-      }
-    });
-    return await Promise.all(
-      result.map(async (job) => {
+    let jobs = await fetchAndParse(q);
+    jobs = await Promise.all(
+      jobs.map(async (job) => {
         if (job.project) {
           const project = await getDoc(job.project);
           return { ...job, project: project.data() };
@@ -102,6 +70,16 @@ export function FirebaseProvider({ children }) {
         }
       })
     );
+    setUserJobs(jobs);
+    return jobs;
+  }
+
+  function openJobs() {
+    return userJobs.filter((job) => job.endTime == null);
+  }
+
+  function completedJobs() {
+    return userJobs.filter((job) => job.endTime != null);
   }
 
   async function addNewJob(data) {
@@ -125,13 +103,9 @@ export function FirebaseProvider({ children }) {
 
   async function getUserProjects() {
     const q = query(collection(db, "users", currentUser.uid, "projects"));
-    const docs = await getDocs(q);
-    let result = [];
-    docs.forEach((doc) => {
-      result.push({ id: doc.id, ...doc.data() });
-    });
-    setUserProjects(result);
-    return result;
+    let projects = await fetchAndParse(q);
+    setUserProjects(projects);
+    return projects;
   }
 
   useEffect(() => {
@@ -145,13 +119,14 @@ export function FirebaseProvider({ children }) {
   const value = {
     currentUser,
     userProjects,
+    userJobs,
     signup,
     login,
     logout,
-    getUserJobs,
+    fetchUserJobs,
     getUserData,
-    getOpenJobs,
-    getCompletedJobs,
+    openJobs,
+    completedJobs,
     addNewJob,
     getUserProjects,
   };

@@ -1,6 +1,5 @@
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import React, { useState } from "react";
-import { useAuth } from "../contexts/FirebaseContext";
 import HomeIcon from "@mui/icons-material/Home";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
@@ -8,12 +7,12 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import withContext from "../withContext";
 import { useNavigate } from "react-router-dom";
 
-function Navbar() {
+function Navbar(props) {
+  const fb = { ...props.value };
   const [value, setValue] = useState();
-  const { currentUser, testDatabase } = useAuth();
   const navigate = useNavigate();
 
-  if (currentUser) {
+  if (fb.currentUser) {
     return (
       <Paper
         sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}

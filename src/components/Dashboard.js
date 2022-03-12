@@ -1,18 +1,4 @@
-import { MoreHoriz } from "@mui/icons-material";
-import {
-  Button,
-  Card,
-  CardHeader,
-  CircularProgress,
-  Divider,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,27 +8,21 @@ import ActiveJobCard from "./ActiveJobCard";
 import RecentJobs from "./RecentJobs";
 
 function Dashboard(props) {
+  const fb = { ...props.value };
   const navigate = useNavigate();
-  const [jobList, setJobList] = useState();
-  const [userInfo, setUserInfo] = useState();
   const [activeJob, setActiveJob] = useState();
 
-  const fb = { ...props.value };
-
-  useEffect(async () => {
+  useEffect(() => {
     if (!fb.currentUser) {
       console.log("Not logged in, redirecting.");
       navigate("/login");
     }
-    setUserInfo(await fb.getUserData());
-    // getUserJobs(currentUser.uid);
-    const jobs = await fb.getUserJobs();
-    setJobList(jobs);
-
-    const openJobs = await fb.getOpenJobs();
-    setActiveJob(openJobs[0]);
   }, []);
 
+  useEffect(() => {
+    const openJobs = fb.openJobs();
+    setActiveJob(openJobs[0]);
+  }, [fb.userJobs]);
   return (
     <>
       <Grid

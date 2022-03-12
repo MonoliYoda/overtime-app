@@ -12,10 +12,10 @@ import {
 } from "@mui/material";
 import React from "react";
 import withContext from "../withContext";
-import { strfDate, strfTime, strfRuntime } from "../util/utils";
+import { strfDate, strfTime } from "../util/utils";
 
 function ActiveJobCard(props) {
-  const fb = { ...props.value };
+  // const fb = { ...props.value };
   const activeJob = props.activeJob;
   if (activeJob) {
     return (

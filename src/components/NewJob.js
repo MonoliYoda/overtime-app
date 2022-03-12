@@ -23,20 +23,20 @@ import { useNavigate } from "react-router-dom";
 import { Timestamp } from "firebase/firestore";
 
 function NewJob(props) {
+  const fb = { ...props.value };
   const [name, setName] = useState("");
   const [project, setProject] = useState();
   const [userProjects, setUserProjects] = useState([]);
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState(null);
   const [ovtScheme, setOvtScheme] = useState(10);
-  const [client, setClient] = useState("");
+  // const [client, setClient] = useState("");
   const [personalRate, setPersonalRate] = useState(0);
   const [equipmentRate, setEquipmentRate] = useState(0);
   const [stdWorkHours, setStdWorkHours] = useState(11);
   const [notes, setNotes] = useState("");
 
   const clients = ["one", "two"];
-  const fb = { ...props.value };
   const navigate = useNavigate();
   const filter = createFilterOptions();
 
@@ -45,18 +45,17 @@ function NewJob(props) {
   }, [fb.userProjects]);
 
   useEffect(() => {
-    fb.getUserProjects();
+    async function fetchProjects() {
+      fb.getUserProjects();
+    }
     function setDateToNow() {
       setStartTime(new Date());
     }
-
+    fetchProjects();
     setDateToNow();
   }, []);
 
   function handleSubmit() {
-    if (endTime) {
-      endTime = Timestamp.fromDate(new Date(startTime));
-    }
     fb.addNewJob({
       name,
       project,
