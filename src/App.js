@@ -12,6 +12,8 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
+import NewJob from "./components/NewJob";
+import NewJobMenu from "./components/NewJobMenu";
 
 function App() {
   return (
@@ -23,17 +25,28 @@ function App() {
           </Typography>
         </Container>
       </AppBar>
+
       <Container sx={{}}>
         <FirebaseProvider>
           <Router>
             <Routes>
-              <Route exact path="/" element={<Dashboard x={9} />} />
+              <Route exact path="/" element={<Dashboard />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
+              <Route
+                path="/new"
+                element={
+                  <>
+                    <Dashboard />
+                    <NewJob />
+                  </>
+                }
+              />
             </Routes>
+            <NewJobMenu />
+            <Navbar />
           </Router>
-          <Navbar />
         </FirebaseProvider>
       </Container>
     </>
