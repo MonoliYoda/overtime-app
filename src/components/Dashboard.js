@@ -18,7 +18,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import withContext from "../withContext";
 import ActiveJobCard from "./ActiveJobCard";
-import NewJobMenu from "./NewJobMenu";
 
 import RecentJobs from "./RecentJobs";
 
@@ -64,7 +63,6 @@ function Dashboard(props) {
           <RecentJobs />
         </Grid>
       </Grid>
-      <NewJobMenu></NewJobMenu>
     </>
   );
 }
