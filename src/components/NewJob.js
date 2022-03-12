@@ -26,17 +26,16 @@ function NewJob(props) {
   const fb = { ...props.value };
   const [name, setName] = useState("");
   const [project, setProject] = useState(null);
+  const [client, setClient] = useState(null);
   const [userProjects, setUserProjects] = useState([]);
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState(null);
   const [ovtScheme, setOvtScheme] = useState(10);
-  // const [client, setClient] = useState("");
   const [personalRate, setPersonalRate] = useState(0);
   const [equipmentRate, setEquipmentRate] = useState(0);
   const [stdWorkHours, setStdWorkHours] = useState(11);
   const [notes, setNotes] = useState("");
 
-  const clients = ["one", "two"];
   const navigate = useNavigate();
   const filter = createFilterOptions();
 
@@ -48,10 +47,14 @@ function NewJob(props) {
     async function fetchProjects() {
       fb.fetchUserProjects();
     }
+    async function fetchClients() {
+      fb.fetchUserClients();
+    }
     function setDateToNow() {
       setStartTime(new Date());
     }
     fetchProjects();
+    fetchClients();
     setDateToNow();
   }, []);
 
@@ -68,6 +71,35 @@ function NewJob(props) {
       notes,
     });
     navigate("/");
+  }
+
+  function getOptLbl(option) {
+    // Value selected with enter, right from the input
+    if (typeof option === "string") {
+      return option;
+    }
+    // Add "xxx" option created dynamically
+    if (option.inputValue) {
+      return option.inputValue;
+    }
+    // Regular option
+    return option.name;
+  }
+
+  function filerOpts(options, params) {
+    const filtered = filter(options, params);
+
+    const { inputValue } = params;
+    // Suggest the creation of a new value
+    const isExisting = options.some((option) => inputValue === option.name);
+    if (inputValue !== "" && !isExisting) {
+      filtered.push({
+        inputValue,
+        name: `Add "${inputValue}"`,
+      });
+    }
+
+    return filtered;
   }
 
   return (
@@ -112,40 +144,13 @@ function NewJob(props) {
                       setProject(newValue);
                     }
                   }}
-                  filterOptions={(options, params) => {
-                    const filtered = filter(options, params);
-
-                    const { inputValue } = params;
-                    // Suggest the creation of a new value
-                    const isExisting = options.some(
-                      (option) => inputValue === option.name
-                    );
-                    if (inputValue !== "" && !isExisting) {
-                      filtered.push({
-                        inputValue,
-                        name: `Add "${inputValue}"`,
-                      });
-                    }
-
-                    return filtered;
-                  }}
+                  filterOptions={filerOpts}
                   selectOnFocus
                   clearOnBlur
                   handleHomeEndKeys
-                  id="free-solo-with-text-demo"
+                  id="project-select"
                   options={userProjects}
-                  getOptionLabel={(option) => {
-                    // Value selected with enter, right from the input
-                    if (typeof option === "string") {
-                      return option;
-                    }
-                    // Add "xxx" option created dynamically
-                    if (option.inputValue) {
-                      return option.inputValue;
-                    }
-                    // Regular option
-                    return option.name;
-                  }}
+                  getOptionLabel={getOptLbl}
                   renderOption={(props, option) => (
                     <li {...props}>{option.name}</li>
                   )}
@@ -158,8 +163,35 @@ function NewJob(props) {
               </Grid>
               <Grid item xs={12}>
                 <Autocomplete
+                  value={client}
+                  onChange={(e, newValue) => {
+                    if (typeof newValue === "string") {
+                      setClient({
+                        name: newValue,
+                      });
+                    } else if (newValue && newValue.inputValue) {
+                      // Create a new value from the user input
+                      const newClient = {
+                        name: newValue.inputValue,
+                      };
+                      setClient(newClient);
+                      fb.addNewClient(newClient);
+                    } else {
+                      setClient(newValue);
+                    }
+                  }}
+                  filterOptions={filerOpts}
+                  selectOnFocus
+                  clearOnBlur
+                  handleHomeEndKeys
+                  id="client-select"
+                  options={fb.userClients}
+                  getOptionLabel={getOptLbl}
+                  renderOption={(props, option) => (
+                    <li {...props}>{option.name}</li>
+                  )}
+                  sx={{ width: "50%", display: "inline-block" }}
                   freeSolo
-                  options={clients}
                   renderInput={(params) => (
                     <TextField {...params} label="Client" variant="standard" />
                   )}
@@ -208,7 +240,11 @@ function NewJob(props) {
                   freeSolo
                   options={clients}
                   renderInput={(params) => (
-                    <TextField {...params} label="Client" variant="standard" />
+                    <TextField
+                      {...params}
+                      label="Overtime Scheme"
+                      variant="standard"
+                    />
                   )}
                   sx={{ width: "50%", display: "inline-block" }}
                 />

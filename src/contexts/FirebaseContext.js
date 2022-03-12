@@ -116,6 +116,21 @@ export function FirebaseProvider({ children }) {
     return docRef;
   }
 
+  async function fetchUserClients() {
+    const q = query(collection(db, "users", currentUser.uid, "clients"));
+    let clients = await fetchAndParse(q);
+    setUserClients(clients);
+    return clients;
+  }
+
+  async function addNewClient(data) {
+    const docRef = await addDoc(
+      collection(db, "users", currentUser.uid, "clients"),
+      data
+    );
+    fetchUserClients();
+    return docRef;
+  }
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
@@ -128,6 +143,7 @@ export function FirebaseProvider({ children }) {
     currentUser,
     userProjects,
     userJobs,
+    userClients,
     signup,
     login,
     logout,
@@ -138,6 +154,8 @@ export function FirebaseProvider({ children }) {
     addNewJob,
     fetchUserProjects,
     addNewProject,
+    fetchUserClients,
+    addNewClient,
   };
   return (
     <FirebaseContext.Provider value={value}>
