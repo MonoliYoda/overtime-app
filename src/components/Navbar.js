@@ -6,10 +6,12 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
 import SettingsIcon from "@mui/icons-material/Settings";
 import withContext from "../withContext";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const [value, setValue] = useState();
   const { currentUser, testDatabase } = useAuth();
+  const navigate = useNavigate();
 
   if (currentUser) {
     return (
@@ -28,21 +30,25 @@ function Navbar() {
             label="Home"
             value="home"
             icon={<HomeIcon />}
+            onClick={() => navigate("/")}
           />
           <BottomNavigationAction
             label="History"
             value="history"
             icon={<ViewListIcon />}
+            onClick={() => navigate("/history")}
           />
           <BottomNavigationAction
             label="Stats"
             value="statstics"
             icon={<EqualizerIcon />}
+            onClick={() => navigate("/stats")}
           />
           <BottomNavigationAction
             label="Settings"
             value="settings"
             icon={<SettingsIcon />}
+            onClick={() => navigate("/settings")}
           />
         </BottomNavigation>
       </Paper>
