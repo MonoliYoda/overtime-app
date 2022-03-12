@@ -14,6 +14,7 @@ import {
   where,
   orderBy,
   limit,
+  addDoc,
 } from "firebase/firestore";
 
 const FirebaseContext = React.createContext();
@@ -102,6 +103,13 @@ export function FirebaseProvider({ children }) {
     );
   }
 
+  async function addNewJob(data) {
+    const docRef = await addDoc(
+      collection(db, "users", currentUser.uid, "jobs"),
+      data
+    );
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
@@ -119,6 +127,7 @@ export function FirebaseProvider({ children }) {
     getUserData,
     getOpenJobs,
     getCompletedJobs,
+    addNewJob,
   };
   return (
     <FirebaseContext.Provider value={value}>
