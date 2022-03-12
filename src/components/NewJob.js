@@ -30,7 +30,7 @@ function NewJob(props) {
   const [userProjects, setUserProjects] = useState([]);
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState(null);
-  const [ovtScheme, setOvtScheme] = useState(10);
+  const [ovtScheme, setOvtScheme] = useState(null);
   const [personalRate, setPersonalRate] = useState(0);
   const [equipmentRate, setEquipmentRate] = useState(0);
   const [stdWorkHours, setStdWorkHours] = useState(11);
@@ -50,11 +50,15 @@ function NewJob(props) {
     async function fetchClients() {
       fb.fetchUserClients();
     }
+    async function fetchOvtSchemes() {
+      fb.fetchUserOvtSchemes();
+    }
     function setDateToNow() {
       setStartTime(new Date());
     }
     fetchProjects();
     fetchClients();
+    fetchOvtSchemes();
     setDateToNow();
   }, []);
 
@@ -62,14 +66,15 @@ function NewJob(props) {
     fb.addNewJob({
       name,
       project,
-      client: null,
+      client,
       startTime: Timestamp.fromDate(new Date(startTime)),
       endTime: endTime ? Timestamp.fromDate(new Date(endTime)) : null,
       personalRate,
       equipmentRate,
-      stdWorkHours,
+      ovtScheme,
       notes,
     });
+    fb.fetchUserJobs();
     navigate("/");
   }
 
@@ -237,23 +242,42 @@ function NewJob(props) {
               </Grid>
               <Grid item xs={12}>
                 <Autocomplete
+                  value={ovtScheme}
+                  onChange={(e, newValue) => {
+                    if (typeof newValue === "string") {
+                      setOvtScheme({
+                        name: newValue,
+                      });
+                    } else if (newValue && newValue.inputValue) {
+                      // Create a new value from the user input
+                      const newScheme = {
+                        name: newValue.inputValue,
+                      };
+                      setOvtScheme(newScheme);
+                      fb.addNewOvtScheme(newScheme);
+                    } else {
+                      setOvtScheme(newValue);
+                    }
+                  }}
+                  filterOptions={filerOpts}
+                  selectOnFocus
+                  clearOnBlur
+                  handleHomeEndKeys
+                  id="ovt-scheme-select"
+                  options={fb.userOvtSchemes}
+                  getOptionLabel={getOptLbl}
+                  renderOption={(props, option) => (
+                    <li {...props}>{option.name}</li>
+                  )}
+                  sx={{ width: "50%", display: "inline-block" }}
                   freeSolo
-                  options={clients}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Overtime Scheme"
+                      label="Overtime scheme"
                       variant="standard"
                     />
                   )}
-                  sx={{ width: "50%", display: "inline-block" }}
-                />
-                <TextField
-                  variant="standard"
-                  label="Standard work hours"
-                  type="number"
-                  value={stdWorkHours}
-                  onChange={(e) => setStdWorkHours(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
