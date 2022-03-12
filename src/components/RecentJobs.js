@@ -1,24 +1,15 @@
-import {
-  Card,
-  CardHeader,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { Card, CardHeader, List, ListItem, ListItemText } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { strfDate, strfTime, strfRuntime } from "../util/utils";
 import withContext from "../withContext";
 
 function RecentJobs(props) {
-  const [jobList, setJobList] = useState();
   const fb = { ...props.value };
+  const [jobList, setJobList] = useState();
+
   useEffect(() => {
-    async function fetchJobs() {
-      setJobList(await fb.getCompletedJobs(4));
-    }
-    fetchJobs();
-  }, []);
+    setJobList(fb.completedJobs());
+  }, [fb.userJobs]);
 
   return (
     <Card elevation={4}>

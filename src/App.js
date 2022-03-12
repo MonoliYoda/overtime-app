@@ -1,11 +1,6 @@
 import "./App.css";
-import { AppBar, Container, Switch, Typography } from "@mui/material";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-} from "react-router-dom";
+import { AppBar, Container, Typography } from "@mui/material";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { FirebaseProvider } from "./contexts/FirebaseContext";
 import Signup from "./components/Signup";
 import Navbar from "./components/Navbar";

@@ -9,18 +9,18 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useAuth } from "../contexts/FirebaseContext";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import withContext from "../withContext";
 
-export default function Login() {
+function Login(props) {
+  const fb = { ...props.value };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, currentUser } = useAuth();
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentUser) {
+    if (fb.currentUser) {
       navigate("/");
     }
   }, []);
@@ -28,7 +28,7 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await login(email, password);
+      await fb.login(email, password);
       navigate("/");
     } catch (e) {
       console.log(e);
@@ -61,8 +61,8 @@ export default function Login() {
           Log In
         </Typography>
         {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-        {currentUser && (
-          <Alert severity="success">{`Successfully logged in as ${currentUser.email}`}</Alert>
+        {fb.currentUser && (
+          <Alert severity="success">{`Successfully logged in as ${fb.currentUser.email}`}</Alert>
         )}
         <TextField
           id="email"
@@ -95,3 +95,5 @@ export default function Login() {
     </Card>
   );
 }
+
+export default withContext(Login);
