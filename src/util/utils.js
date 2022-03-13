@@ -17,16 +17,18 @@ export function strfTime(timestamp) {
 
 export function strfRuntime(start, end) {
   try {
-    const t1 = new Date(start.toDate());
-    const t2 = new Date(end.toDate());
-    const diff = (t2 - t1) / 1000;
+    const diff = (end - start) / 1000;
     var hrs = Math.floor(diff / (60 * 60));
     var leftSec = diff - hrs * 60 * 60;
     var mins = Math.floor(leftSec / 60);
+    leftSec = Math.floor(leftSec - mins * 60);
     if (mins < 10) {
       mins = "0" + mins;
     }
-    return `Worktime: ${hrs}:${mins}`;
+    if (leftSec < 10) {
+      leftSec = "0" + leftSec;
+    }
+    return `${hrs}:${mins}:${leftSec}`;
   } catch (e) {
     return "-";
   }
