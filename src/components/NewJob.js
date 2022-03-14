@@ -6,11 +6,7 @@ import {
   CardContent,
   CardHeader,
   createFilterOptions,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -20,7 +16,6 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { DateTimePicker } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
-import { Timestamp } from "firebase/firestore";
 
 function NewJob(props) {
   const fb = { ...props.value };
@@ -33,7 +28,6 @@ function NewJob(props) {
   const [ovtScheme, setOvtScheme] = useState(null);
   const [personalRate, setPersonalRate] = useState(0);
   const [equipmentRate, setEquipmentRate] = useState(0);
-  const [stdWorkHours, setStdWorkHours] = useState(11);
   const [notes, setNotes] = useState("");
 
   const navigate = useNavigate();
@@ -67,8 +61,8 @@ function NewJob(props) {
       name,
       project,
       client,
-      startTime: Timestamp.fromDate(new Date(startTime)),
-      endTime: endTime ? Timestamp.fromDate(new Date(endTime)) : null,
+      startTime: new Date(startTime),
+      endTime: endTime ? new Date(endTime) : null,
       personalRate,
       equipmentRate,
       ovtScheme,

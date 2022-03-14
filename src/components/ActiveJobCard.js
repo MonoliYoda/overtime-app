@@ -1,6 +1,7 @@
 import { MoreVert } from "@mui/icons-material";
 import StartIcon from "@mui/icons-material/Start";
 import FolderIcon from "@mui/icons-material/Folder";
+import ShortTextIcon from "@mui/icons-material/ShortText";
 import {
   Button,
   Card,
@@ -20,10 +21,10 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import withContext from "../withContext";
-import { strfDate, strfTime, strfRuntime } from "../util/utils";
+import { strfRuntime } from "../util/utils";
 
 function ActiveJobCard(props) {
-  // const fb = { ...props.value };
+  const fb = { ...props.value };
   const activeJob = props.activeJob;
   const [percentElapsed, setPercentElapsed] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState("");
@@ -35,18 +36,22 @@ function ActiveJobCard(props) {
     return diff;
   }
 
+  function finishJob() {
+    fb.updateJob({ ...activeJob, endTime: new Date() });
+  }
+
   useEffect(() => {
     let timer = setInterval(() => {
       if (!activeJob) {
         return () => {};
       }
-      const secondsEl = secondsElapsed(new Date(activeJob.startTime.toDate()));
+      const secondsEl = secondsElapsed(activeJob.startTime);
       const secondsTotal = activeJob.ovtScheme.stdHours * 60 * 60;
       let pct = (secondsEl / secondsTotal) * 100;
       if (pct > 100) pct = 100;
       setPercentElapsed(pct);
 
-      const jobStartTime = new Date(activeJob.startTime.toDate());
+      const jobStartTime = new Date(activeJob.startTime);
       setTimeElapsed(strfRuntime(jobStartTime, new Date()));
       const jobEndTime = new Date(
         jobStartTime.setHours(
@@ -68,7 +73,7 @@ function ActiveJobCard(props) {
           >
             <CardHeader
               title="Dzisiaj"
-              subheader={strfDate(activeJob.startTime)}
+              subheader={activeJob.startTime.toLocaleDateString()}
               action={
                 <IconButton>
                   <MoreVert />
@@ -79,9 +84,17 @@ function ActiveJobCard(props) {
               <List>
                 <ListItem>
                   <ListItemIcon>
+                    <ShortTextIcon />
+                  </ListItemIcon>
+                  <ListItemText>{activeJob.name}</ListItemText>
+                </ListItem>
+                <ListItem>
+                  <ListItemIcon>
                     <StartIcon />
                   </ListItemIcon>
-                  <ListItemText>{strfTime(activeJob.startTime)}</ListItemText>
+                  <ListItemText>
+                    {activeJob.startTime.toLocaleTimeString()}
+                  </ListItemText>
                 </ListItem>
                 <Divider />
                 <ListItem>
@@ -95,7 +108,7 @@ function ActiveJobCard(props) {
               </List>
             </CardContent>
             <CardActions>
-              <Button>Zakończ</Button>
+              <Button onClick={finishJob}>Zakończ</Button>
               <Button>Edycja</Button>
             </CardActions>
           </Card>
