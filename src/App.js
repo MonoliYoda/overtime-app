@@ -1,5 +1,5 @@
 import "./App.css";
-import { AppBar, Container, Typography } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { FirebaseProvider } from "./contexts/FirebaseContext";
 import Signup from "./components/Signup";
@@ -10,21 +10,15 @@ import Logout from "./components/Logout";
 import NewJob from "./components/NewJob";
 import NewJobMenu from "./components/NewJobMenu";
 import History from "./components/History";
+import AppBarTop from "./components/AppBarTop";
 
 function App() {
   return (
     <>
-      <AppBar position="static">
-        <Container maxWidth="x1">
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Dashboard
-          </Typography>
-        </Container>
-      </AppBar>
-
-      <Container sx={{}}>
-        <FirebaseProvider>
-          <Router>
+      <FirebaseProvider>
+        <Router>
+          <Container sx={{}}>
+            <AppBarTop />
             <Routes>
               <Route exact path="/" element={<Dashboard />} />
               <Route path="/signup" element={<Signup />} />
@@ -43,9 +37,9 @@ function App() {
             </Routes>
             <NewJobMenu />
             <Navbar />
-          </Router>
-        </FirebaseProvider>
-      </Container>
+          </Container>
+        </Router>
+      </FirebaseProvider>
     </>
   );
 }
