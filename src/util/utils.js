@@ -1,20 +1,3 @@
-export function strfDate(timestamp) {
-  try {
-    const date = new Date(timestamp.toDate());
-    return date.toLocaleDateString();
-  } catch (e) {
-    return "-";
-  }
-}
-export function strfTime(timestamp) {
-  try {
-    const date = new Date(timestamp.toDate());
-    return date.toLocaleTimeString();
-  } catch (e) {
-    return "-";
-  }
-}
-
 export function strfRuntime(start, end) {
   try {
     const diff = (end - start) / 1000;
@@ -32,4 +15,16 @@ export function strfRuntime(start, end) {
   } catch (e) {
     return "-";
   }
+}
+
+export function minutesToTimeString(totalMinutes) {
+  let minutes = Math.floor(totalMinutes) % 60;
+  let hours = (Math.floor(totalMinutes) - minutes) / 60;
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+  if (hours < 10) {
+    hours = "0" + hours;
+  }
+  return `${hours}:${minutes}`;
 }

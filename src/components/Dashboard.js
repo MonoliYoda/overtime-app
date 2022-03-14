@@ -26,7 +26,7 @@ function Dashboard(props) {
   }, [fb.userJobs]);
   return (
     <>
-      <Box sx={{ height: "calc(100vh-150px)" }}>
+      <Box sx={{ height: "calc(100vh - 150px)" }}>
         <Grid
           container
           rowSpacing={1}

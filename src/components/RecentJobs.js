@@ -1,6 +1,6 @@
 import { Card, CardHeader, List, ListItem, ListItemText } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { strfDate, strfTime, strfRuntime } from "../util/utils";
+import { strfRuntime } from "../util/utils";
 import withContext from "../withContext";
 
 function RecentJobs(props) {
@@ -21,13 +21,11 @@ function RecentJobs(props) {
               <ListItem key={job.id}>
                 <ListItemText
                   primary={`${job.name}`}
-                  secondary={`${strfTime(job.startTime)} - ${strfTime(
-                    job.endTime
-                  )}`}
+                  secondary={`${job.startTime.toLocaleTimeString()} - ${job.endTime.toLocaleTimeString()}`}
                 ></ListItemText>
                 <ListItemText
                   sx={{ textAlign: "right" }}
-                  primary={strfDate(job.startTime)}
+                  primary={job.startTime.toLocaleDateString()}
                   secondary={strfRuntime(job.startTime, job.endTime)}
                   edge="end"
                 ></ListItemText>

@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import Logout from "./components/Logout";
 import NewJob from "./components/NewJob";
 import NewJobMenu from "./components/NewJobMenu";
+import History from "./components/History";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
+              <Route path="/history" element={<History />} />
               <Route
                 path="/new"
                 element={

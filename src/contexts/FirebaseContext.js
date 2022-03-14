@@ -13,6 +13,8 @@ import {
   query,
   orderBy,
   addDoc,
+  Timestamp,
+  updateDoc,
 } from "firebase/firestore";
 
 const FirebaseContext = React.createContext();
@@ -78,6 +80,8 @@ export function FirebaseProvider({ children }) {
           ovtScheme = await getDoc(job.ovtScheme);
           ovtScheme = { id: ovtScheme.id, ...ovtScheme.data() };
         }
+        if (job.startTime) job.startTime = new Date(job.startTime.toDate());
+        if (job.endTime) job.endTime = new Date(job.endTime.toDate());
         return { ...job, project, client, ovtScheme };
       })
     );
@@ -94,29 +98,22 @@ export function FirebaseProvider({ children }) {
   }
 
   async function addNewJob(data) {
+    console.log(data);
+    let project = null;
+    let client = null;
+    let ovtScheme = null;
     if (data.project) {
       // Convert project object to actual doc reference
-      data.project = doc(
-        db,
-        "users",
-        currentUser.uid,
-        "projects",
-        data.project.id
-      );
+      project = doc(db, "users", currentUser.uid, "projects", data.project.id);
     }
     if (data.client) {
       // Convert client object to actual doc reference
-      data.client = doc(
-        db,
-        "users",
-        currentUser.uid,
-        "clients",
-        data.client.id
-      );
+      client = doc(db, "users", currentUser.uid, "clients", data.client.id);
     }
     if (data.ovtScheme) {
+      console.log("Ovtscheme found", data.ovtScheme);
       // Convert ovtScheme object to actual doc reference
-      data.ovtScheme = doc(
+      ovtScheme = doc(
         db,
         "users",
         currentUser.uid,
@@ -124,10 +121,65 @@ export function FirebaseProvider({ children }) {
         data.ovtScheme.id
       );
     }
+
+    const job = {
+      name: data.name,
+      project,
+      client,
+      startTime: Timestamp.fromDate(data.startTime),
+      endTime: data.endTime ? Timestamp.fromDate(data.endTime) : null,
+      ovtScheme,
+      personalRate: data.personalRate,
+      equipmentRate: data.equipmentRate,
+      notes: data.notes,
+    };
     const docRef = await addDoc(
       collection(db, "users", currentUser.uid, "jobs"),
-      data
+      job
     );
+    return docRef;
+  }
+
+  async function updateJob(job) {
+    const data = {
+      name: job.name,
+      project: null,
+      client: null,
+      startTime: Timestamp.fromDate(job.startTime),
+      endTime: job.endTime ? Timestamp.fromDate(job.endTime) : null,
+      ovtScheme: null,
+      personalRate: job.personalRate,
+      equipmentRate: job.equipmentRate,
+      notes: job.notes,
+    };
+    if (job.project) {
+      // Convert project object to actual doc reference
+      data.project = doc(
+        db,
+        "users",
+        currentUser.uid,
+        "projects",
+        job.project.id
+      );
+    }
+    if (job.client) {
+      // Convert client object to actual doc reference
+      data.client = doc(db, "users", currentUser.uid, "clients", job.client.id);
+    }
+    if (job.ovtScheme) {
+      // Convert ovtScheme object to actual doc reference
+      data.ovtScheme = doc(
+        db,
+        "users",
+        currentUser.uid,
+        "ovtSchemes",
+        job.ovtScheme.id
+      );
+    }
+    const docRef = doc(db, "users", currentUser.uid, "jobs", job.id);
+
+    await updateDoc(docRef, data);
+    fetchUserJobs();
     return docRef;
   }
 
@@ -201,6 +253,7 @@ export function FirebaseProvider({ children }) {
     openJobs,
     completedJobs,
     addNewJob,
+    updateJob,
     fetchUserProjects,
     addNewProject,
     fetchUserClients,
