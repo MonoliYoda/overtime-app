@@ -15,6 +15,8 @@ import {
   addDoc,
   Timestamp,
   updateDoc,
+  deleteDoc,
+  setDoc,
 } from "firebase/firestore";
 
 const FirebaseContext = React.createContext();
@@ -198,6 +200,11 @@ export function FirebaseProvider({ children }) {
     return docRef;
   }
 
+  async function deleteJob(id) {
+    const docRef = doc(db, "users", currentUser.uid, "jobs", id);
+    await deleteDoc(docRef);
+  }
+
   async function fetchUserProjects() {
     const q = query(collection(db, "users", currentUser.uid, "projects"));
     let projects = await fetchAndParse(q);
@@ -249,6 +256,26 @@ export function FirebaseProvider({ children }) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
+      if (!user) return;
+      // Check if user has collections
+      let userDocRef = doc(db, "users", user.uid);
+      let userDocSnap = await getDoc(userDocRef);
+      if (!userDocSnap.exists()) {
+        console.log("Initializing user database...");
+        // Initialize user
+        await setDoc(doc(db, "users", user.uid), { name: user.email });
+      }
+      let ovtCollectionRef = collection(db, "users", user.uid, "ovtSchemes");
+      let ovtCollectionSnap = await getDocs(ovtCollectionRef);
+      console.log(ovtCollectionSnap);
+      if (!ovtCollectionSnap.size) {
+        await addDoc(collection(db, "users", user.uid, "ovtSchemes"), {
+          name: "Reklama",
+          stdHours: 11,
+          scheme: [15, 15, 20, 20, 30, 50],
+        });
+        fetchUserOvtSchemes();
+      }
       setLoading(false);
     });
     return unsubscribe;
@@ -269,6 +296,7 @@ export function FirebaseProvider({ children }) {
     completedJobs,
     addNewJob,
     updateJob,
+    deleteJob,
     fetchUserProjects,
     addNewProject,
     fetchUserClients,

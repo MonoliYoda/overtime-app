@@ -15,10 +15,11 @@ import withContext from "../withContext";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { DateTimePicker } from "@mui/lab";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function NewJob(props) {
   const fb = { ...props.value };
+  const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [project, setProject] = useState(null);
   const [client, setClient] = useState(null);
@@ -29,9 +30,12 @@ function NewJob(props) {
   const [personalRate, setPersonalRate] = useState(0);
   const [equipmentRate, setEquipmentRate] = useState(0);
   const [notes, setNotes] = useState("");
+  const [edting, setEdting] = useState(false);
 
   const navigate = useNavigate();
   const filter = createFilterOptions();
+
+  let { jobId } = useParams();
 
   useEffect(() => {
     setUserProjects(fb.userProjects);
@@ -54,20 +58,53 @@ function NewJob(props) {
     fetchClients();
     fetchOvtSchemes();
     setDateToNow();
+    if (jobId) {
+      setEdting(true);
+      const editingJob = fb.userJobs.filter((job) => job.id == jobId)[0];
+      if (editingJob) {
+        setId(jobId);
+        setName(editingJob.name);
+        setProject(editingJob.project);
+        setClient(editingJob.client);
+        setStartTime(editingJob.startTime);
+        setEndTime(editingJob.endTime);
+        setPersonalRate(editingJob.personalRate);
+        setEquipmentRate(editingJob.equipmentRate);
+        setOvtScheme(editingJob.ovtScheme);
+        setNotes(editingJob.notes);
+      }
+    } else {
+      setEdting(false);
+    }
   }, []);
 
   function handleSubmit() {
-    fb.addNewJob({
-      name,
-      project,
-      client,
-      startTime: new Date(startTime),
-      endTime: endTime ? new Date(endTime) : null,
-      personalRate,
-      equipmentRate,
-      ovtScheme,
-      notes,
-    });
+    if (edting) {
+      fb.updateJob({
+        id,
+        name,
+        project,
+        client,
+        startTime: new Date(startTime),
+        endTime: endTime ? new Date(endTime) : null,
+        personalRate,
+        equipmentRate,
+        ovtScheme,
+        notes,
+      });
+    } else {
+      fb.addNewJob({
+        name,
+        project,
+        client,
+        startTime: new Date(startTime),
+        endTime: endTime ? new Date(endTime) : null,
+        personalRate,
+        equipmentRate,
+        ovtScheme,
+        notes,
+      });
+    }
     navigate("/");
   }
 

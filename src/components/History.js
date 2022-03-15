@@ -6,6 +6,10 @@ import {
   Box,
   Button,
   Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
   Divider,
   Grid,
   Stack,
@@ -21,10 +25,24 @@ function History(props) {
   const fb = { ...props.value };
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [jobIdToDelete, setJobIdToDelete] = useState(null);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  function handleDeleteRequest(id) {
+    setJobIdToDelete(id);
+    setDeleteConfirmOpen(true);
+  }
+
+  function handleDeleteConfirm() {
+    fb.deleteJob(jobIdToDelete);
+    setDeleteConfirmOpen(false);
+    setJobIdToDelete(null);
+    fb.fetchUserJobs();
+  }
 
   function getFormattedOvertime(job) {
     const endTime = job.endTime || new Date();
@@ -110,12 +128,34 @@ function History(props) {
                   </Stack>
                 </AccordionDetails>
                 <AccordionActions>
-                  <Button>Edytuj</Button>
+                  <Button onClick={(e) => navigate(`/edit/${job.id}`)}>
+                    Edytuj
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteRequest(job.id)}
+                    variant="outlined"
+                    color="error"
+                  >
+                    Usuń
+                  </Button>
                 </AccordionActions>
               </Accordion>
             );
           })}
         </Card>
+        <Dialog open={deleteConfirmOpen}>
+          <DialogContent>
+            <DialogContentText>Czy napewno usunąć?</DialogContentText>
+            <DialogActions>
+              <Button onClick={() => setDeleteConfirmOpen(false)} autoFocus>
+                Nie
+              </Button>
+              <Button onClick={handleDeleteConfirm} color="error">
+                Usuń
+              </Button>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
       </Grid>
     </Grid>
   );
