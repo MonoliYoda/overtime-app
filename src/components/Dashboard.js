@@ -1,10 +1,8 @@
-import { Button, Grid } from "@mui/material";
-import { Box } from "@mui/system";
+import { Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import withContext from "../withContext";
 import ActiveJobCard from "./ActiveJobCard";
-
 import RecentJobs from "./RecentJobs";
 
 function Dashboard(props) {

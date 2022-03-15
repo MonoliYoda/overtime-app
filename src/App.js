@@ -44,9 +44,9 @@ function App() {
                 }
               />
             </Routes>
-            <NewJobMenu />
             <Navbar />
           </Container>
+          <NewJobMenu />
         </Router>
       </FirebaseProvider>
     </>

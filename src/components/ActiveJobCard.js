@@ -24,6 +24,7 @@ import withContext from "../withContext";
 import { minutesToTimeString } from "../util/utils";
 import { strfRuntime } from "../util/utils";
 import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/system";
 
 function ActiveJobCard(props) {
   const fb = { ...props.value };
@@ -183,12 +184,27 @@ function ActiveJobCard(props) {
             ></CardHeader>
             <CardContent>
               <Stack alignItems="center" spacing={1}>
-                <CircularProgress
-                  variant="determinate"
-                  value={percentElapsed}
-                  size={60}
-                  thickness={8}
-                />
+                <Box sx={{ position: "relative" }}>
+                  <CircularProgress
+                    variant="determinate"
+                    value={100}
+                    size={60}
+                    thickness={8}
+                    sx={{
+                      position: "absolute",
+                      zIndex: 1,
+                      right: 0,
+                      color: "text.disabled",
+                    }}
+                  />
+                  <CircularProgress
+                    variant="determinate"
+                    value={percentElapsed}
+                    size={60}
+                    thickness={8}
+                    sx={{ position: "relative", zIndex: 2 }}
+                  />
+                </Box>
                 <Typography>{activeJob ? timeElapsed : "--:--"}</Typography>
               </Stack>
             </CardContent>
