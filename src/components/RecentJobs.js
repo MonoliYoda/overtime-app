@@ -13,10 +13,10 @@ function RecentJobs(props) {
 
   return (
     <Card elevation={4}>
-      <CardHeader title="Recents"></CardHeader>
+      <CardHeader title="Ostatnie"></CardHeader>
       <List>
         {jobList &&
-          jobList.map((job) => {
+          jobList.slice(0, 5).map((job) => {
             return (
               <ListItem key={job.id}>
                 <ListItemText
