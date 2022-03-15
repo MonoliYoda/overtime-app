@@ -34,6 +34,15 @@ function App() {
                   </>
                 }
               />
+              <Route
+                path="/edit/:jobId"
+                element={
+                  <>
+                    <Dashboard />
+                    <NewJob />
+                  </>
+                }
+              />
             </Routes>
             <NewJobMenu />
             <Navbar />
