@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   Divider,
+  Grid,
   Stack,
   Typography,
 } from "@mui/material";
@@ -48,66 +49,75 @@ function History(props) {
   }, []);
 
   return (
-    <Card>
-      {fb.userJobs.map((job) => {
-        return (
-          <Accordion
-            key={job.id}
-            expanded={expanded === job.id}
-            onChange={handleChange(job.id)}
-          >
-            <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography sx={{ width: "33%", flexShrink: 0 }}>
-                {job.name}
-              </Typography>
-              <Typography sx={{ color: "text.secondary" }}>
-                {job.startTime.toLocaleDateString()}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                divider={<Divider orientation="vertical" flexItem />}
+    <Grid
+      container
+      rowSpacing={1}
+      columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+      sx={{ margin: "2rem 0" }}
+    >
+      <Grid item xs={12}>
+        <Card elevation={4}>
+          {fb.userJobs.map((job) => {
+            return (
+              <Accordion
+                key={job.id}
+                expanded={expanded === job.id}
+                onChange={handleChange(job.id)}
               >
-                <Box>
-                  <Typography>Start</Typography>
-                  <Typography>
-                    {job.startTime.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography sx={{ width: "33%", flexShrink: 0 }}>
+                    {job.name}
                   </Typography>
-                </Box>
-                <Box>
-                  <Typography>
-                    {`Czas pracy: ${getFormattedWorktime(job)}`}
+                  <Typography sx={{ color: "text.secondary" }}>
+                    {job.startTime.toLocaleDateString()}
                   </Typography>
-                  <Typography>
-                    {`Nadgodziny: ${getFormattedOvertime(job)}`}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography>Koniec</Typography>
-                  <Typography>
-                    {job.endTime
-                      ? job.endTime.toLocaleTimeString([], {
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    divider={<Divider orientation="vertical" flexItem />}
+                  >
+                    <Box>
+                      <Typography>Start</Typography>
+                      <Typography>
+                        {job.startTime.toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
-                        })
-                      : "--:--"}
-                  </Typography>
-                </Box>
-              </Stack>
-            </AccordionDetails>
-            <AccordionActions>
-              <Button>Edytuj</Button>
-            </AccordionActions>
-          </Accordion>
-        );
-      })}
-    </Card>
+                        })}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography>
+                        {`Czas pracy: ${getFormattedWorktime(job)}`}
+                      </Typography>
+                      <Typography>
+                        {`Nadgodziny: ${getFormattedOvertime(job)}`}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography>Koniec</Typography>
+                      <Typography>
+                        {job.endTime
+                          ? job.endTime.toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : "--:--"}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </AccordionDetails>
+                <AccordionActions>
+                  <Button>Edytuj</Button>
+                </AccordionActions>
+              </Accordion>
+            );
+          })}
+        </Card>
+      </Grid>
+    </Grid>
   );
 }
 

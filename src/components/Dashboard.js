@@ -18,6 +18,7 @@ function Dashboard(props) {
       navigate("/login");
     }
     fb.fetchUserJobs();
+    fb.fetchUserOvtSchemes();
   }, []);
 
   useEffect(() => {
@@ -35,11 +36,6 @@ function Dashboard(props) {
         >
           <Grid item xs={12}>
             <ActiveJobCard activeJob={activeJob} />
-          </Grid>
-          <Grid item xs={12}>
-            <Box display="flex" justifyContent="center">
-              <Button variant="contained">STOP</Button>
-            </Box>
           </Grid>
           <Grid item xs={12}>
             <RecentJobs />

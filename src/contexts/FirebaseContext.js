@@ -31,6 +31,13 @@ export function FirebaseProvider({ children }) {
   const [userClients, setUserClients] = useState([]);
   const [userOvtSchemes, setUserOvtSchemes] = useState([]);
 
+  useEffect(() => {
+    if (currentUser) {
+      fetchUserJobs();
+      fetchUserOvtSchemes();
+    }
+  }, []);
+
   function signup(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
   }
@@ -102,6 +109,7 @@ export function FirebaseProvider({ children }) {
     let project = null;
     let client = null;
     let ovtScheme = null;
+    const defaultScheme = userOvtSchemes[0];
     if (data.project) {
       // Convert project object to actual doc reference
       project = doc(db, "users", currentUser.uid, "projects", data.project.id);
@@ -111,7 +119,6 @@ export function FirebaseProvider({ children }) {
       client = doc(db, "users", currentUser.uid, "clients", data.client.id);
     }
     if (data.ovtScheme) {
-      console.log("Ovtscheme found", data.ovtScheme);
       // Convert ovtScheme object to actual doc reference
       ovtScheme = doc(
         db,
@@ -120,23 +127,31 @@ export function FirebaseProvider({ children }) {
         "ovtSchemes",
         data.ovtScheme.id
       );
+    } else {
+      ovtScheme = doc(
+        db,
+        "users",
+        currentUser.uid,
+        "ovtSchemes",
+        userOvtSchemes[0].id
+      );
     }
-
     const job = {
       name: data.name,
       project,
       client,
       startTime: Timestamp.fromDate(data.startTime),
       endTime: data.endTime ? Timestamp.fromDate(data.endTime) : null,
-      ovtScheme,
-      personalRate: data.personalRate,
-      equipmentRate: data.equipmentRate,
-      notes: data.notes,
+      ovtScheme: data.ovtScheme || ovtScheme,
+      personalRate: data.personalRate || 0,
+      equipmentRate: data.equipmentRate || 0,
+      notes: data.notes || "",
     };
     const docRef = await addDoc(
       collection(db, "users", currentUser.uid, "jobs"),
       job
     );
+    fetchUserJobs();
     return docRef;
   }
 

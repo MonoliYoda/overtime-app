@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import withContext from "../withContext";
+import { minutesToTimeString } from "../util/utils";
 import { strfRuntime } from "../util/utils";
 
 function ActiveJobCard(props) {
@@ -40,123 +41,174 @@ function ActiveJobCard(props) {
     fb.updateJob({ ...activeJob, endTime: new Date() });
   }
 
+  function startNewJob() {
+    fb.addNewJob({
+      name: "",
+      project: null,
+      client: null,
+      startTime: new Date(),
+      endTime: null,
+      personalRate: 0,
+      equipmentRate: 0,
+      ovtScheme: null,
+      notes: "",
+    });
+  }
+
+  function updateCycle() {
+    if (!activeJob) {
+      return () => {};
+    }
+    const secondsEl = secondsElapsed(activeJob.startTime);
+    const secondsTotal = activeJob.ovtScheme.stdHours * 60 * 60;
+    let pct = (secondsEl / secondsTotal) * 100;
+    if (pct > 100) pct = 100;
+    setPercentElapsed(pct);
+
+    const jobStartTime = new Date(activeJob.startTime);
+    setTimeElapsed(strfRuntime(jobStartTime, new Date()));
+    const jobEndTime = new Date(
+      jobStartTime.setHours(
+        jobStartTime.getHours() + activeJob.ovtScheme.stdHours
+      )
+    );
+    setTimeLeft(strfRuntime(new Date(), jobEndTime));
+  }
+
+  function getOvertimePercentage() {
+    if (!activeJob) {
+      return 0;
+    }
+    let runtimeMinutes = Math.floor(
+      (new Date() - activeJob.startTime) / 1000 / 60
+    );
+    let ovtMinutes = runtimeMinutes - activeJob.ovtScheme.stdHours * 60;
+    if (ovtMinutes < 0) return 0;
+    return ((ovtMinutes % 60) / 60) * 100;
+  }
+
+  function getFormattedOvertime(job) {
+    if (!job) return "--:--";
+    const endTime = job.endTime || new Date();
+    let runtimeMinutes = Math.floor((endTime - job.startTime) / 1000 / 60);
+    let ovtMinutes = runtimeMinutes - job.ovtScheme.stdHours * 60;
+    if (ovtMinutes < 0) return "00:00";
+    return minutesToTimeString(ovtMinutes);
+  }
+
+  useEffect(() => {
+    updateCycle();
+  }, []);
+
   useEffect(() => {
     let timer = setInterval(() => {
-      if (!activeJob) {
-        return () => {};
-      }
-      const secondsEl = secondsElapsed(activeJob.startTime);
-      const secondsTotal = activeJob.ovtScheme.stdHours * 60 * 60;
-      let pct = (secondsEl / secondsTotal) * 100;
-      if (pct > 100) pct = 100;
-      setPercentElapsed(pct);
-
-      const jobStartTime = new Date(activeJob.startTime);
-      setTimeElapsed(strfRuntime(jobStartTime, new Date()));
-      const jobEndTime = new Date(
-        jobStartTime.setHours(
-          jobStartTime.getHours() + activeJob.ovtScheme.stdHours
-        )
-      );
-      setTimeLeft(strfRuntime(new Date(), jobEndTime));
+      updateCycle();
     }, 1000);
     return () => clearInterval(timer);
   }, [activeJob]);
 
-  if (activeJob) {
-    return (
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
-          <Card
-            elevation={4}
-            sx={{ height: "100%", display: "flex", flexDirection: "column" }}
-          >
-            <CardHeader
-              title="Dzisiaj"
-              subheader={activeJob.startTime.toLocaleDateString()}
-              action={
-                <IconButton>
-                  <MoreVert />
-                </IconButton>
-              }
-            ></CardHeader>
-            <CardContent sx={{ flexGrow: 1 }}>
-              <List>
-                <ListItem>
-                  <ListItemIcon>
-                    <ShortTextIcon />
-                  </ListItemIcon>
-                  <ListItemText>{activeJob.name}</ListItemText>
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <StartIcon />
-                  </ListItemIcon>
-                  <ListItemText>
-                    {activeJob.startTime.toLocaleTimeString()}
-                  </ListItemText>
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText>
-                    {activeJob.project ? activeJob.project.name : "-"}
-                  </ListItemText>
-                </ListItem>
-              </List>
-            </CardContent>
-            <CardActions>
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={8}>
+        <Card
+          elevation={4}
+          sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+        >
+          <CardHeader
+            title="Dzisiaj"
+            subheader={new Date().toLocaleDateString()}
+            action={
+              <IconButton>
+                <MoreVert />
+              </IconButton>
+            }
+          ></CardHeader>
+          <CardContent sx={{ flexGrow: 1 }}>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <ShortTextIcon />
+                </ListItemIcon>
+                <ListItemText>{activeJob ? activeJob.name : "-"}</ListItemText>
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemIcon>
+                  <StartIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  {activeJob
+                    ? activeJob.startTime.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "-"}
+                </ListItemText>
+              </ListItem>
+              <Divider />
+              <ListItem>
+                <ListItemIcon>
+                  <FolderIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  {activeJob && activeJob.project
+                    ? activeJob.project.name
+                    : "-"}
+                </ListItemText>
+              </ListItem>
+            </List>
+          </CardContent>
+          <CardActions>
+            {activeJob ? (
               <Button onClick={finishJob}>Zakończ</Button>
-              <Button>Edycja</Button>
-            </CardActions>
-          </Card>
-        </Grid>
-        <Grid item xs={4}>
-          <Stack spacing={2}>
-            <Card elevation={4}>
-              <CardHeader
-                subheader="Czas pracy"
-                sx={{ paddingBottom: "0" }}
-              ></CardHeader>
-              <CardContent>
-                <Stack alignItems="center" spacing={1}>
-                  <CircularProgress
-                    variant="determinate"
-                    value={percentElapsed}
-                    size={60}
-                    thickness={8}
-                  />
-                  <Typography>{timeElapsed}</Typography>
-                </Stack>
-              </CardContent>
-            </Card>
-            <Card elevation={4}>
-              <CardHeader
-                subheader="Nadgodziny"
-                sx={{ paddingBottom: "0" }}
-              ></CardHeader>
-              <CardContent>
-                <Stack alignItems="center" spacing={1}>
-                  <CircularProgress
-                    variant="determinate"
-                    value={60}
-                    size={60}
-                    thickness={8}
-                    color="warning"
-                  />
-                  <Typography>{timeLeft}</Typography>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Stack>
-        </Grid>
+            ) : (
+              <Button onClick={startNewJob}>Rozpocznij</Button>
+            )}
+            {activeJob && <Button>Edycja</Button>}
+          </CardActions>
+        </Card>
       </Grid>
-    );
-  } else {
-    return null;
-  }
+      <Grid item xs={4}>
+        <Stack spacing={2}>
+          <Card elevation={4}>
+            <CardHeader
+              subheader="Czas pracy"
+              sx={{ paddingBottom: "0" }}
+            ></CardHeader>
+            <CardContent>
+              <Stack alignItems="center" spacing={1}>
+                <CircularProgress
+                  variant="determinate"
+                  value={percentElapsed}
+                  size={60}
+                  thickness={8}
+                />
+                <Typography>{activeJob ? timeElapsed : "--:--"}</Typography>
+              </Stack>
+            </CardContent>
+          </Card>
+          <Card elevation={4}>
+            <CardHeader
+              subheader="Nadgodziny"
+              sx={{ paddingBottom: "0" }}
+            ></CardHeader>
+            <CardContent>
+              <Stack alignItems="center" spacing={1}>
+                <CircularProgress
+                  variant="determinate"
+                  value={getOvertimePercentage()}
+                  size={60}
+                  thickness={8}
+                  color="warning"
+                />
+                <Typography>{getFormattedOvertime(activeJob)}</Typography>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Stack>
+      </Grid>
+    </Grid>
+  );
 }
 
 export default withContext(ActiveJobCard);

@@ -68,7 +68,6 @@ function NewJob(props) {
       ovtScheme,
       notes,
     });
-    fb.fetchUserJobs();
     navigate("/");
   }
 

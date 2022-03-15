@@ -5,6 +5,9 @@ export function strfRuntime(start, end) {
     var leftSec = diff - hrs * 60 * 60;
     var mins = Math.floor(leftSec / 60);
     leftSec = Math.floor(leftSec - mins * 60);
+    if (hrs < 10) {
+      hrs = "0" + hrs;
+    }
     if (mins < 10) {
       mins = "0" + mins;
     }
