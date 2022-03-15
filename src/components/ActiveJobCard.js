@@ -23,12 +23,14 @@ import React, { useEffect, useState } from "react";
 import withContext from "../withContext";
 import { minutesToTimeString } from "../util/utils";
 import { strfRuntime } from "../util/utils";
+import { useNavigate } from "react-router-dom";
 
 function ActiveJobCard(props) {
   const fb = { ...props.value };
+  const navigate = useNavigate();
   const activeJob = props.activeJob;
   const [percentElapsed, setPercentElapsed] = useState(0);
-  const [timeElapsed, setTimeElapsed] = useState("");
+  const [timeElapsed, setTimeElapsed] = useState("--:--");
   const [timeLeft, setTimeLeft] = useState("");
 
   function secondsElapsed(startTime) {
@@ -97,7 +99,7 @@ function ActiveJobCard(props) {
   }
 
   useEffect(() => {
-    updateCycle();
+    setPercentElapsed(1);
   }, []);
 
   useEffect(() => {
@@ -164,7 +166,11 @@ function ActiveJobCard(props) {
             ) : (
               <Button onClick={startNewJob}>Rozpocznij</Button>
             )}
-            {activeJob && <Button>Edycja</Button>}
+            {activeJob && (
+              <Button onClick={(e) => navigate(`/edit/${activeJob.id}`)}>
+                Edytuj
+              </Button>
+            )}
           </CardActions>
         </Card>
       </Grid>
