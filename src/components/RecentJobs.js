@@ -1,4 +1,15 @@
-import { Card, CardHeader, List, ListItem, ListItemText } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardHeader,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { strfRuntime } from "../util/utils";
 import withContext from "../withContext";
@@ -27,22 +38,37 @@ function RecentJobs(props) {
   }
 
   return (
-    <Card elevation={4}>
-      <CardHeader title="Ostatnie"></CardHeader>
-      {fb.completedJobs() &&
-        fb
-          .completedJobs()
-          .slice(0, 5)
-          .map((job) => (
-            <AccordionJob
-              key={job.id}
-              job={job}
-              handleChange={handleChange}
-              expandedID={expanded}
-              handleDelete={handleDeleteRequest}
-            />
-          ))}
-    </Card>
+    <>
+      <Card elevation={4}>
+        <CardHeader title="Ostatnie"></CardHeader>
+        {fb.completedJobs() &&
+          fb
+            .completedJobs()
+            .slice(0, 5)
+            .map((job) => (
+              <AccordionJob
+                key={job.id}
+                job={job}
+                handleChange={handleChange}
+                expandedID={expanded}
+                handleDelete={handleDeleteRequest}
+              />
+            ))}
+      </Card>
+      <Dialog open={deleteConfirmOpen}>
+        <DialogContent>
+          <DialogContentText>Czy napewno usunąć?</DialogContentText>
+          <DialogActions>
+            <Button onClick={() => setDeleteConfirmOpen(false)} autoFocus>
+              Nie
+            </Button>
+            <Button onClick={handleDeleteConfirm} color="error">
+              Usuń
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
