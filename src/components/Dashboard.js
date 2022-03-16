@@ -26,7 +26,7 @@ function Dashboard(props) {
   return (
     <Grid
       container
-      rowSpacing={1}
+      rowSpacing={2}
       columnSpacing={{ xs: 1, sm: 2, md: 3 }}
       sx={{ margin: "2rem 0" }}
     >
