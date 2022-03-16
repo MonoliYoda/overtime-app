@@ -24,6 +24,9 @@ export default function AppBarTop() {
     if (location.pathname === "/history") {
       return "History";
     }
+    if (location.pathname === "/stats") {
+      return "Statystyki";
+    }
   }
 
   const handleMenu = (event) => {
