@@ -2,37 +2,46 @@ import { Card, CardHeader, List, ListItem, ListItemText } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { strfRuntime } from "../util/utils";
 import withContext from "../withContext";
+import AccordionJob from "./AccordionJob";
 
 function RecentJobs(props) {
   const fb = { ...props.value };
-  const [jobList, setJobList] = useState();
+  const [expanded, setExpanded] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [jobIdToDelete, setJobIdToDelete] = useState(null);
 
-  useEffect(() => {
-    setJobList(fb.completedJobs());
-  }, [fb.userJobs]);
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  function handleDeleteRequest(id) {
+    setJobIdToDelete(id);
+    setDeleteConfirmOpen(true);
+  }
+
+  function handleDeleteConfirm() {
+    fb.deleteJob(jobIdToDelete);
+    setDeleteConfirmOpen(false);
+    setJobIdToDelete(null);
+    fb.fetchUserJobs();
+  }
 
   return (
     <Card elevation={4}>
       <CardHeader title="Ostatnie"></CardHeader>
-      <List>
-        {jobList &&
-          jobList.slice(0, 5).map((job) => {
-            return (
-              <ListItem key={job.id}>
-                <ListItemText
-                  primary={`${job.name}`}
-                  secondary={`${job.startTime.toLocaleTimeString()} - ${job.endTime.toLocaleTimeString()}`}
-                ></ListItemText>
-                <ListItemText
-                  sx={{ textAlign: "right" }}
-                  primary={job.startTime.toLocaleDateString()}
-                  secondary={strfRuntime(job.startTime, job.endTime)}
-                  edge="end"
-                ></ListItemText>
-              </ListItem>
-            );
-          })}
-      </List>
+      {fb.completedJobs() &&
+        fb
+          .completedJobs()
+          .slice(0, 5)
+          .map((job) => (
+            <AccordionJob
+              key={job.id}
+              job={job}
+              handleChange={handleChange}
+              expandedID={expanded}
+              handleDelete={handleDeleteRequest}
+            />
+          ))}
     </Card>
   );
 }
