@@ -6,6 +6,7 @@ import EqualizerIcon from "@mui/icons-material/Equalizer";
 import SettingsIcon from "@mui/icons-material/Settings";
 import withContext from "../withContext";
 import { useNavigate } from "react-router-dom";
+import NewJobMenu from "./NewJobMenu";
 
 function Navbar(props) {
   const fb = { ...props.value };
@@ -50,6 +51,7 @@ function Navbar(props) {
             onClick={() => navigate("/settings")}
           />
         </BottomNavigation>
+        <NewJobMenu />
       </Paper>
     );
   } else {

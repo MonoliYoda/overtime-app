@@ -46,7 +46,6 @@ function App() {
             </Routes>
             <Navbar />
           </Container>
-          <NewJobMenu />
         </Router>
       </FirebaseProvider>
     </>
