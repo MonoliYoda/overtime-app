@@ -17,6 +17,7 @@ import NewJob from "./components/NewJob";
 import NewJobMenu from "./components/NewJobMenu";
 import History from "./components/History";
 import AppBarTop from "./components/AppBarTop";
+import Statistics from "./components/Statistics";
 
 function App() {
   const darkTheme = createTheme({
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/history" element={<History />} />
+                <Route path="/stats" element={<Statistics />} />
                 <Route
                   path="/new"
                   element={
