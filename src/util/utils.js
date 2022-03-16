@@ -31,3 +31,16 @@ export function minutesToTimeString(totalMinutes) {
   }
   return `${hours}:${minutes}`;
 }
+
+export function calculateOvertimeValue(base, scheme = [15], hours) {
+  let sum = 0;
+  let schemeIdx = 0;
+  for (let i = 0; i < hours; i++) {
+    schemeIdx = i;
+    if (schemeIdx >= scheme.length) {
+      schemeIdx = scheme.length - 1;
+    }
+    sum = sum + base * (scheme[schemeIdx] / 100);
+  }
+  return sum;
+}
