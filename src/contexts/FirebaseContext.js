@@ -267,7 +267,6 @@ export function FirebaseProvider({ children }) {
       }
       let ovtCollectionRef = collection(db, "users", user.uid, "ovtSchemes");
       let ovtCollectionSnap = await getDocs(ovtCollectionRef);
-      console.log(ovtCollectionSnap);
       if (!ovtCollectionSnap.size) {
         await addDoc(collection(db, "users", user.uid, "ovtSchemes"), {
           name: "Reklama",
