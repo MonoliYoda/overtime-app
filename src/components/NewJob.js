@@ -260,14 +260,14 @@ function NewJob(props) {
                   label="Personal rate"
                   type="number"
                   value={personalRate}
-                  onChange={(e) => setPersonalRate(e.target.value)}
+                  onChange={(e) => setPersonalRate(parseInt(e.target.value))}
                 />
                 <TextField
                   variant="standard"
                   label="Equipment rate"
                   type="number"
                   value={equipmentRate}
-                  onChange={(e) => setEquipmentRate(e.target.value)}
+                  onChange={(e) => setEquipmentRate(parseInt(e.target.value))}
                 />
               </Grid>
               <Grid item xs={12}>
