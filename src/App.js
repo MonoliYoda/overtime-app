@@ -1,5 +1,11 @@
 import "./App.css";
-import { Container, Typography } from "@mui/material";
+import {
+  Container,
+  createTheme,
+  CssBaseline,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { FirebaseProvider } from "./contexts/FirebaseContext";
 import Signup from "./components/Signup";
@@ -13,41 +19,49 @@ import History from "./components/History";
 import AppBarTop from "./components/AppBarTop";
 
 function App() {
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+    },
+  });
   return (
     <>
-      <FirebaseProvider>
-        <Router>
-          <Container sx={{}}>
-            <AppBarTop />
-            <Routes>
-              <Route exact path="/" element={<Dashboard />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/history" element={<History />} />
-              <Route
-                path="/new"
-                element={
-                  <>
-                    <Dashboard />
-                    <NewJob />
-                  </>
-                }
-              />
-              <Route
-                path="/edit/:jobId"
-                element={
-                  <>
-                    <Dashboard />
-                    <NewJob />
-                  </>
-                }
-              />
-            </Routes>
-            <Navbar />
-          </Container>
-        </Router>
-      </FirebaseProvider>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <FirebaseProvider>
+          <Router>
+            <Container sx={{}}>
+              <AppBarTop />
+              <Routes>
+                <Route exact path="/" element={<Dashboard />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/history" element={<History />} />
+                <Route
+                  path="/new"
+                  element={
+                    <>
+                      <Dashboard />
+                      <NewJob />
+                    </>
+                  }
+                />
+                <Route
+                  path="/edit/:jobId"
+                  element={
+                    <>
+                      <Dashboard />
+                      <NewJob />
+                    </>
+                  }
+                />
+              </Routes>
+              <Navbar />
+            </Container>
+          </Router>
+        </FirebaseProvider>
+      </ThemeProvider>
     </>
   );
 }
