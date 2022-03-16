@@ -216,13 +216,28 @@ function ActiveJobCard(props) {
             ></CardHeader>
             <CardContent>
               <Stack alignItems="center" spacing={1}>
-                <CircularProgress
-                  variant="determinate"
-                  value={getOvertimePercentage()}
-                  size={60}
-                  thickness={8}
-                  color="warning"
-                />
+                <Box sx={{ position: "relative" }}>
+                  <CircularProgress
+                    variant="determinate"
+                    value={100}
+                    size={60}
+                    thickness={8}
+                    sx={{
+                      position: "absolute",
+                      zIndex: 1,
+                      right: 0,
+                      color: "text.disabled",
+                    }}
+                  />
+                  <CircularProgress
+                    variant="determinate"
+                    value={getOvertimePercentage()}
+                    size={60}
+                    thickness={8}
+                    color="warning"
+                    sx={{ position: "relative", zIndex: 2 }}
+                  />
+                </Box>
                 <Typography>{getFormattedOvertime(activeJob)}</Typography>
               </Stack>
             </CardContent>
