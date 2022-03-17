@@ -27,10 +27,10 @@ export default function MonthlyStats() {
       <Grid item xs={12}>
         <StatsCard
           startDate={getFirstDayOfMonth(
-            new Date().setDate(new Date().getDate() - 7)
+            new Date().setDate(new Date().getDate() - 30)
           )}
           endDate={getLastDayOfMonth(
-            new Date().setDate(new Date().getDate() - 7)
+            new Date().setDate(new Date().getDate() - 30)
           )}
           title="Poprzedni miesiąc"
         />

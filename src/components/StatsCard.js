@@ -40,6 +40,7 @@ function StatsCard(props) {
       if (runtimeMinutes % 60 > 15) {
         ovtHours += 1;
       }
+      if (ovtHours < 0) ovtHours = 0;
       setTotalOvtHours(totalOvtHours + ovtHours);
       setOvertimePay(
         overtimePay +

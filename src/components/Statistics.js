@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import withContext from "../withContext";
 import MonthlyStats from "./MonthlyStats";
 import WeeklyStats from "./WeeklyStats";
+import YearlyStats from "./YearlyStats";
 
 function Statistics(props) {
   const fb = { ...props.value };
@@ -34,7 +35,9 @@ function Statistics(props) {
       <TabPanel value="month">
         <MonthlyStats />
       </TabPanel>
-      <TabPanel value="year">Rok</TabPanel>
+      <TabPanel value="year">
+        <YearlyStats />
+      </TabPanel>
     </TabContext>
   );
 }
