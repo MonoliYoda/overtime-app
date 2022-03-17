@@ -144,7 +144,7 @@ export function FirebaseProvider({ children }) {
       client,
       startTime: Timestamp.fromDate(data.startTime),
       endTime: data.endTime ? Timestamp.fromDate(data.endTime) : null,
-      ovtScheme: data.ovtScheme || ovtScheme,
+      ovtScheme: ovtScheme,
       personalRate: data.personalRate || 0,
       equipmentRate: data.equipmentRate || 0,
       notes: data.notes || "",
