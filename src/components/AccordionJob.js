@@ -29,7 +29,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { minutesToTimeString, calculateOvertimeValue } from "../util/utils";
+import { minutesToTimeString, getOvertimePay } from "../util/utils";
 
 function AccordionJob(props) {
   const job = { ...props.job };
@@ -59,7 +59,7 @@ function AccordionJob(props) {
     if (runtimeMinutes % 60 > 15) {
       hours += 1;
     }
-    const overtimePay = calculateOvertimeValue(
+    const overtimePay = getOvertimePay(
       job.personalRate,
       job.ovtScheme.scheme,
       hours

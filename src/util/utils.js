@@ -32,7 +32,7 @@ export function minutesToTimeString(totalMinutes) {
   return `${hours}:${minutes}`;
 }
 
-export function calculateOvertimeValue(base, scheme = [15], hours) {
+export function getOvertimePay(base, scheme = [15], hours) {
   let sum = 0;
   let schemeIdx = 0;
   for (let i = 0; i < hours; i++) {
@@ -43,4 +43,19 @@ export function calculateOvertimeValue(base, scheme = [15], hours) {
     sum = sum + base * (scheme[schemeIdx] / 100);
   }
   return sum;
+}
+
+export function getTotalPay(job) {
+  const endTime = job.endTime || new Date();
+  let runtimeMinutes = Math.floor((endTime - job.startTime) / 1000 / 60);
+  let hours = Math.floor(runtimeMinutes / 60) - job.ovtScheme.stdHours;
+  if (runtimeMinutes % 60 > 15) {
+    hours += 1;
+  }
+  const overtimePay = getOvertimePay(
+    job.personalRate,
+    job.ovtScheme.scheme,
+    hours
+  );
+  return job.personalRate + job.equipmentRate + overtimePay;
 }
