@@ -206,6 +206,7 @@ export function FirebaseProvider({ children }) {
   }
 
   async function fetchUserProjects() {
+    if (!currentUser) return false;
     const q = query(collection(db, "users", currentUser.uid, "projects"));
     let projects = await fetchAndParse(q);
     setUserProjects(projects);
@@ -222,6 +223,7 @@ export function FirebaseProvider({ children }) {
   }
 
   async function fetchUserClients() {
+    if (!currentUser) return false;
     const q = query(collection(db, "users", currentUser.uid, "clients"));
     let clients = await fetchAndParse(q);
     setUserClients(clients);
@@ -238,6 +240,7 @@ export function FirebaseProvider({ children }) {
   }
 
   async function fetchUserOvtSchemes() {
+    if (!currentUser) return false;
     const q = query(collection(db, "users", currentUser.uid, "ovtSchemes"));
     let schemes = await fetchAndParse(q);
     setUserOvtSchemes(schemes);
@@ -305,7 +308,7 @@ export function FirebaseProvider({ children }) {
   };
   return (
     <FirebaseContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </FirebaseContext.Provider>
   );
 }

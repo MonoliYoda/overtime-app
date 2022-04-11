@@ -1,4 +1,5 @@
 import { Grid } from "@mui/material";
+import { el } from "date-fns/locale";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import withContext from "../withContext";
@@ -14,15 +15,24 @@ function Dashboard(props) {
     if (!fb.currentUser) {
       console.log("Not logged in, redirecting.");
       navigate("/login");
+    } else {
+      fb.fetchUserJobs();
+      fb.fetchUserOvtSchemes();
     }
-    fb.fetchUserJobs();
-    fb.fetchUserOvtSchemes();
   }, []);
 
   useEffect(() => {
     const openJobs = fb.openJobs();
     setActiveJob(openJobs[0]);
   }, [fb.userJobs]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fb.fetchUserJobs();
+    }, 20000);
+    return () => clearInterval(interval);
+  }, []);
+  
   return (
     <Grid
       container
