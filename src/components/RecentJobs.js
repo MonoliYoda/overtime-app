@@ -6,12 +6,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  List,
-  ListItem,
-  ListItemText,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { strfRuntime } from "../util/utils";
+import React, { useState } from "react";
 import withContext from "../withContext";
 import AccordionJob from "./AccordionJob";
 import { scroller } from 'react-scroll'

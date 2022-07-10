@@ -4,7 +4,6 @@ import {
   createTheme,
   CssBaseline,
   ThemeProvider,
-  Typography,
 } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { FirebaseProvider } from "./contexts/FirebaseContext";
@@ -14,7 +13,6 @@ import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import Logout from "./components/Logout";
 import NewJob from "./components/NewJob";
-import NewJobMenu from "./components/NewJobMenu";
 import History from "./components/History";
 import AppBarTop from "./components/AppBarTop";
 import Statistics from "./components/Statistics";

@@ -7,7 +7,7 @@ import WeeklyStats from "./WeeklyStats";
 import YearlyStats from "./YearlyStats";
 
 function Statistics(props) {
-  const fb = { ...props.value };
+  // const fb = { ...props.value };
   const [value, setValue] = useState("week");
 
   function handleChange(e, newVal) {

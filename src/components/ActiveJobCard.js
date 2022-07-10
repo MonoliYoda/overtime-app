@@ -32,7 +32,6 @@ function ActiveJobCard(props) {
   const activeJob = props.activeJob;
   const [percentElapsed, setPercentElapsed] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState("--:--");
-  const [timeLeft, setTimeLeft] = useState("");
 
   function secondsElapsed(startTime) {
     const endTime = new Date();

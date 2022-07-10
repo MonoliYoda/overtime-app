@@ -3,7 +3,7 @@ import { Grid } from "@mui/material";
 import StatsCard from "./StatsCard";
 
 export default function WeeklyStats() {
-  const today = new Date();
+  // const today = new Date();
 
   function getFirstDayOfWeek(d) {
     const date = new Date(d);
