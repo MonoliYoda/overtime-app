@@ -23,7 +23,7 @@ function Login(props) {
     if (fb.currentUser) {
       navigate("/");
     }
-  }, []);
+  }, [fb.currentUser]);
 
   async function handleSubmit(e) {
     e.preventDefault();
