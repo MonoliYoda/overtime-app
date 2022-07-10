@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { minutesToTimeString, getOvertimePay } from "../util/utils";
+import { Element } from "react-scroll";
 
 function AccordionJob(props) {
   const job = { ...props.job };
@@ -62,6 +63,7 @@ function AccordionJob(props) {
   }
 
   return (
+  <Element name={job.id}>
     <Accordion
       key={job.id}
       expanded={expanded === job.id}
@@ -176,6 +178,7 @@ function AccordionJob(props) {
         </Button>
       </AccordionActions>
     </Accordion>
+    </Element>
   );
 }
 

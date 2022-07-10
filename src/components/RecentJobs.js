@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { strfRuntime } from "../util/utils";
 import withContext from "../withContext";
 import AccordionJob from "./AccordionJob";
+import { scroller } from 'react-scroll'
 
 function RecentJobs(props) {
   const fb = { ...props.value };
@@ -23,6 +24,12 @@ function RecentJobs(props) {
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
+    if (isExpanded) {
+      scroller.scrollTo(panel, {duration: 300, smooth: true})
+      setTimeout(() => {
+        scroller.scrollTo(panel, {duration: 300, smooth: true})
+      }, 400)
+    }
   };
 
   function handleDeleteRequest(id) {
