@@ -74,7 +74,6 @@ function ActiveJobCard(props) {
         jobStartTime.getHours() + activeJob.ovtScheme.stdHours
       )
     );
-    setTimeLeft(strfRuntime(new Date(), jobEndTime));
   }
 
   function getOvertimePercentage() {
