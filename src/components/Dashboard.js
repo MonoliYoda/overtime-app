@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { el } from "date-fns/locale";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +45,9 @@ function Dashboard(props) {
       </Grid>
       <Grid item xs={12}>
         <RecentJobs />
+      </Grid>
+      <Grid item xs={12}>
+        <Box sx={{height: "10rem"}}></Box>
       </Grid>
     </Grid>
   );
