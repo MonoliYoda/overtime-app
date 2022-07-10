@@ -60,7 +60,7 @@ function NewJob(props) {
     setDateToNow();
     if (jobId) {
       setEdting(true);
-      const editingJob = fb.userJobs.filter((job) => job.id == jobId)[0];
+      const editingJob = fb.userJobs.filter((job) => job.id === jobId)[0];
       if (editingJob) {
         setId(jobId);
         setName(editingJob.name);
@@ -143,7 +143,7 @@ function NewJob(props) {
       open={true}
     >
       <Card sx={{ maxWidth: "32rem" }}>
-        <CardHeader title="New Job" />
+        <CardHeader title={jobId ? "Edit Job" : "New Job"} />
         <CardContent>
           <Box
             component="form"
@@ -189,14 +189,12 @@ function NewJob(props) {
                   renderOption={(props, option) => (
                     <li {...props}>{option.name}</li>
                   )}
-                  sx={{ width: "50%", display: "inline-block" }}
+                  sx={{ width: "40%", display: "inline-block" }}
                   freeSolo
                   renderInput={(params) => (
                     <TextField {...params} label="Project" variant="standard" />
                   )}
                 />
-              </Grid>
-              <Grid item xs={12}>
                 <Autocomplete
                   value={client}
                   onChange={(e, newValue) => {
@@ -225,12 +223,14 @@ function NewJob(props) {
                   renderOption={(props, option) => (
                     <li {...props}>{option.name}</li>
                   )}
-                  sx={{ width: "50%", display: "inline-block" }}
+                  sx={{ width: "40%", display: "inline-block" }}
                   freeSolo
                   renderInput={(params) => (
                     <TextField {...params} label="Client" variant="standard" />
                   )}
                 />
+              </Grid>
+              <Grid item xs={12}>
               </Grid>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Grid item xs={12}>
