@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from "react";
 import withContext from "../withContext";
 import {
-  Business,
   ExpandMore,
-  Folder,
-  Functions,
-  MoreTime,
-  Note,
-  Person,
-  PlayArrow,
-  PointOfSale,
-  PrecisionManufacturing,
-  Stop,
-  Timer,
 } from "@mui/icons-material";
 import {
   Accordion,
@@ -21,11 +10,11 @@ import {
   AccordionSummary,
   Button,
   Divider,
+  Grid,
   List,
   ListItem,
-  ListItemIcon,
+  ListItemSecondaryAction,
   ListItemText,
-  Stack,
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -52,17 +41,22 @@ function AccordionJob(props) {
     return minutesToTimeString(runtimeMinutes);
   }
 
-  function getTotalPay() {
+  function getRuntime() {
     const endTime = job.endTime || new Date();
     let runtimeMinutes = Math.floor((endTime - job.startTime) / 1000 / 60);
     let hours = Math.floor(runtimeMinutes / 60) - job.ovtScheme.stdHours;
     if (runtimeMinutes % 60 > 15) {
       hours += 1;
     }
+    return hours;
+  }
+
+  function getTotalPay() {
+    const runtime = getRuntime()
     const overtimePay = getOvertimePay(
       job.personalRate,
       job.ovtScheme.scheme,
-      hours
+      runtime
     );
     return job.personalRate + job.equipmentRate + overtimePay;
   }
@@ -81,114 +75,95 @@ function AccordionJob(props) {
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Stack
-          direction="row"
-          flexWrap="wrap"
-          divider={<Divider orientation="vertical" flexItem />}
-        >
-          <List>
+        <Grid container rowSpacing={2}>
+          <Grid item xs={6}>
+          <List dense>
             <ListItem>
               <ListItemText>Szczegóły</ListItemText>
             </ListItem>
             <Divider />
             <ListItem>
-              <ListItemIcon>
-                <Folder />
-              </ListItemIcon>
-              <ListItemText>{job.project && job.project.name}</ListItemText>
+              <ListItemText style={{margin: 0}} primary="Projekt" secondary={job.project ? job.project.name : "---"}></ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemIcon>
-                <Business />
-              </ListItemIcon>
-              <ListItemText>{job.client && job.client.name}</ListItemText>
+              <ListItemText style={{margin: 0}} primary="Klient" secondary={job.client ? job.client.name : "---"}></ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemIcon>
-                <Note />
-              </ListItemIcon>
-              <ListItemText>{job.notes}</ListItemText>
+              <ListItemText style={{margin: 0}} primary="Notatka" secondary={job.notes ? job.notes : "---"}></ListItemText>
             </ListItem>
           </List>
-          <List>
+          </Grid>
+          <Grid item xs={6}>
+
+          <List dense>
             <ListItem>
               <ListItemText>Czas</ListItemText>
             </ListItem>
             <Divider />
             <ListItem>
-              <ListItemIcon>
-                <PlayArrow />
-              </ListItemIcon>
-              <ListItemText>
+              <ListItemText style={{margin: 0}} primary="Start" secondary=
                 {job.startTime.toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
-                })}
+                })}>
               </ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemIcon>
-                <Stop />
-              </ListItemIcon>
-              <ListItemText>
+              <ListItemText style={{margin: 0}} primary="Koniec" secondary=
                 {job.endTime
                   ? job.endTime.toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })
-                  : "--:--"}
+                  : "--:--"}>
               </ListItemText>
             </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Timer />
-              </ListItemIcon>
-              <ListItemText>{getFormattedWorktime(job)}</ListItemText>
+            <ListItem >
+              <ListItemText style={{margin: 0}} primary="Czas pracy" secondary={getFormattedWorktime(job)}></ListItemText>
             </ListItem>
             <ListItem>
-              <ListItemIcon>
-                <MoreTime />
-              </ListItemIcon>
-              <ListItemText>{getFormattedOvertime(job)}</ListItemText>
-            </ListItem>
-            <ListItem>
-              <ListItemText></ListItemText>
+              <ListItemText style={{margin: 0}} primary="Nadgodziny" secondary={getFormattedOvertime(job)}></ListItemText>
             </ListItem>
           </List>
-          <List>
+          </Grid>
+          <Grid item xs={12}>
+
+          <List dense>
             <ListItem>
               <ListItemText>Finanse</ListItemText>
             </ListItem>
             <Divider />
-
             <ListItem>
-              <ListItemIcon>
-                <Person />
-              </ListItemIcon>
-              <ListItemText>{job.personalRate}</ListItemText>
+              <ListItemText primary="Dniówka"></ListItemText>
+              <ListItemSecondaryAction>
+                {job.personalRate}
+              </ListItemSecondaryAction>
             </ListItem>
             <ListItem>
-              <ListItemIcon>
-                <PrecisionManufacturing />
-              </ListItemIcon>
-              <ListItemText>{job.equipmentRate}</ListItemText>
+              <ListItemText primary="Sprzęt"></ListItemText>
+              <ListItemSecondaryAction>
+                {job.equipmentRate}
+              </ListItemSecondaryAction>
             </ListItem>
             <ListItem>
-              <ListItemIcon>
-                <Functions />
-              </ListItemIcon>
-              <ListItemText>{job.ovtScheme.name}</ListItemText>
+              <ListItemText primary="Nadgodziny" secondary={job.ovtScheme.name}></ListItemText>
+              <ListItemSecondaryAction>
+                {getOvertimePay(
+                  job.personalRate,
+                  job.ovtScheme.scheme,
+                  getRuntime()
+                )}
+              </ListItemSecondaryAction>
             </ListItem>
             <Divider />
-            <ListItem>
-              <ListItemIcon>
-                <PointOfSale />
-              </ListItemIcon>
-
-              <ListItemText>{getTotalPay()}</ListItemText>
+            <ListItem style={{marginTop: "1rem"}}>
+              <ListItemText primary=" "></ListItemText>
+              <ListItemSecondaryAction>{getTotalPay()}</ListItemSecondaryAction>
             </ListItem>
           </List>
-        </Stack>
+          </Grid>
+          </Grid>
+
       </AccordionDetails>
       <AccordionActions>
         <Button onClick={(e) => navigate(`/edit/${job.id}`)}>Edytuj</Button>
