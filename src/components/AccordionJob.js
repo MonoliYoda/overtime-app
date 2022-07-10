@@ -78,7 +78,7 @@ function AccordionJob(props) {
       </AccordionSummary>
       <AccordionDetails>
         <Grid container rowSpacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={6} sm={4}>
           <List dense>
             <ListItem>
               <ListItemText>Szczegóły</ListItemText>
@@ -95,7 +95,7 @@ function AccordionJob(props) {
             </ListItem>
           </List>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={6} sm={4}>
 
           <List dense>
             <ListItem>
@@ -128,7 +128,7 @@ function AccordionJob(props) {
             </ListItem>
           </List>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
 
           <List dense>
             <ListItem>
