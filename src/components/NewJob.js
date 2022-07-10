@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Backdrop,
+  Box,
   Button,
   Card,
   CardContent,
@@ -9,7 +10,6 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import withContext from "../withContext";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -36,6 +36,8 @@ function NewJob(props) {
   const filter = createFilterOptions();
 
   let { jobId } = useParams();
+
+  const textFieldStyle = {width: "100%", paddingRight: "1rem"}
 
   useEffect(() => {
     setUserProjects(fb.userProjects);
@@ -153,14 +155,16 @@ function NewJob(props) {
             noValidate
           >
             <Grid container rowSpacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
                   variant="standard"
                   label="Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  sx={{ width: "50%" }}
+                  style={textFieldStyle}
                 />
+              </Grid>
+              <Grid item xs={6}>
                 <Autocomplete
                   value={project}
                   onChange={(e, newValue) => {
@@ -189,12 +193,13 @@ function NewJob(props) {
                   renderOption={(props, option) => (
                     <li {...props}>{option.name}</li>
                   )}
-                  sx={{ width: "40%", display: "inline-block" }}
                   freeSolo
                   renderInput={(params) => (
-                    <TextField {...params} label="Project" variant="standard" />
+                    <TextField {...params} style={textFieldStyle} label="Project" variant="standard" />
                   )}
                 />
+              </Grid>
+              <Grid item xs={6}>
                 <Autocomplete
                   value={client}
                   onChange={(e, newValue) => {
@@ -223,30 +228,39 @@ function NewJob(props) {
                   renderOption={(props, option) => (
                     <li {...props}>{option.name}</li>
                   )}
-                  sx={{ width: "40%", display: "inline-block" }}
                   freeSolo
                   renderInput={(params) => (
-                    <TextField {...params} label="Client" variant="standard" />
+                    <TextField {...params} style={textFieldStyle} label="Client" variant="standard" />
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
-              </Grid>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <DateTimePicker
-                    renderInput={(props) => <TextField {...props} />}
+                    renderInput={(props) => <TextField {...props} style={textFieldStyle} />}
                     label="Start Time"
                     value={startTime}
                     onChange={(newValue) => {
                       setStartTime(newValue);
                     }}
                   />
+                </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="standard"
+                  label="Personal rate"
+                  type="number"
+                  value={personalRate}
+                  onChange={(e) => setPersonalRate(parseInt(e.target.value))}
+                  style={textFieldStyle}
+                />
+              </Grid>
+                <Grid item xs={6}>
                   <DateTimePicker
                     clearable={true}
                     defaultValue={null}
-                    renderInput={(props) => <TextField {...props} />}
-                    label="End Time (leave blank if ongoing)"
+                    renderInput={(props) => <TextField {...props} style={textFieldStyle} />}
+                    label="End Time (blank if ongoing)"
                     value={endTime}
                     onChange={(newValue) => {
                       setEndTime(newValue);
@@ -254,23 +268,17 @@ function NewJob(props) {
                   />
                 </Grid>
               </LocalizationProvider>
-              <Grid item xs={12}>
-                <TextField
-                  variant="standard"
-                  label="Personal rate"
-                  type="number"
-                  value={personalRate}
-                  onChange={(e) => setPersonalRate(parseInt(e.target.value))}
-                />
+              <Grid item xs={6}>
                 <TextField
                   variant="standard"
                   label="Equipment rate"
                   type="number"
                   value={equipmentRate}
                   onChange={(e) => setEquipmentRate(parseInt(e.target.value))}
+                  style={textFieldStyle}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Autocomplete
                   value={ovtScheme}
                   onChange={(e, newValue) => {
@@ -299,23 +307,24 @@ function NewJob(props) {
                   renderOption={(props, option) => (
                     <li {...props}>{option.name}</li>
                   )}
-                  sx={{ width: "50%", display: "inline-block" }}
                   freeSolo
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label="Overtime scheme"
                       variant="standard"
+                      style={textFieldStyle}
                     />
                   )}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
                   variant="standard"
                   label="Notes"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
+                  style={textFieldStyle}
                 />
               </Grid>
               <Grid item xs={12} display="flex" justifyContent="space-between">
