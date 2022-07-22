@@ -80,6 +80,13 @@ function NewJob(props) {
     }
   }, []);
 
+  function createTimeZeroSeconds(timeString) {
+    let time = new Date(timeString);
+    time.setSeconds(0);
+    console.log(time)
+    return time
+  }
+
   function handleSubmit() {
     if (edting) {
       fb.updateJob({
@@ -87,8 +94,8 @@ function NewJob(props) {
         name,
         project,
         client,
-        startTime: new Date(startTime),
-        endTime: endTime ? new Date(endTime) : null,
+        startTime: createTimeZeroSeconds(startTime),
+        endTime: endTime ? createTimeZeroSeconds(endTime) : null,
         personalRate,
         equipmentRate,
         ovtScheme,
@@ -99,8 +106,8 @@ function NewJob(props) {
         name,
         project,
         client,
-        startTime: new Date(startTime),
-        endTime: endTime ? new Date(endTime) : null,
+        startTime: createTimeZeroSeconds(startTime),
+        endTime: endTime ? createTimeZeroSeconds(endTime) : null,
         personalRate,
         equipmentRate,
         ovtScheme,
