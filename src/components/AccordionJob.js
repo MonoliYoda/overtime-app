@@ -28,6 +28,8 @@ function AccordionJob(props) {
   const handleDeleteRequest = props.handleDelete;
   const navigate = useNavigate();
 
+  const dividerStyle = {width: "6rem"}
+
   function getFormattedOvertime(job) {
     const endTime = job.endTime || new Date();
     let runtimeMinutes = Math.floor((endTime - job.startTime) / 1000 / 60);
@@ -69,6 +71,7 @@ function AccordionJob(props) {
       expanded={expanded === job.id}
       onChange={handleChange(job.id)}
       elevation={4}
+      sx={{margin: "0.5rem 0", backgroundColor: "#191919"}}
     >
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Typography sx={{ width: "33%", flexShrink: 0 }}>{job.name}</Typography>
@@ -83,7 +86,7 @@ function AccordionJob(props) {
             <ListItem>
               <ListItemText>Szczegóły</ListItemText>
             </ListItem>
-            <Divider />
+            <Divider style={dividerStyle} />
             <ListItem>
               <ListItemText style={{margin: 0}} primary="Projekt" secondary={job.project ? job.project.name : "---"}></ListItemText>
             </ListItem>
@@ -101,7 +104,7 @@ function AccordionJob(props) {
             <ListItem>
               <ListItemText>Czas</ListItemText>
             </ListItem>
-            <Divider />
+            <Divider style={dividerStyle} />
             <ListItem>
               <ListItemText style={{margin: 0}} primary="Start" secondary=
                 {job.startTime.toLocaleTimeString([], {
@@ -134,7 +137,7 @@ function AccordionJob(props) {
             <ListItem>
               <ListItemText>Finanse</ListItemText>
             </ListItem>
-            <Divider />
+            <Divider style={dividerStyle} />
             <ListItem>
               <ListItemText primary="Dniówka"></ListItemText>
               <ListItemSecondaryAction>
@@ -157,7 +160,7 @@ function AccordionJob(props) {
                 )}
               </ListItemSecondaryAction>
             </ListItem>
-            <Divider />
+            <Divider style={{width: "4rem", marginLeft: "auto"}} />
             <ListItem style={{marginTop: "1rem"}}>
               <ListItemText primary=" "></ListItemText>
               <ListItemSecondaryAction>{getTotalPay()}</ListItemSecondaryAction>

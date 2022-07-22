@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   CardHeader,
@@ -42,20 +43,20 @@ function RecentJobs(props) {
 
   return (
     <>
-      <Card elevation={4}>
+      <Card elevation={4} sx={{padding: "0 0.5rem"}}>
         <CardHeader title="Ostatnie"></CardHeader>
-        {fb.completedJobs() &&
+      {fb.completedJobs() &&
           fb
-            .completedJobs()
-            .slice(0, 5)
-            .map((job) => (
-              <AccordionJob
-                key={job.id}
-                job={job}
-                handleChange={handleChange}
-                expandedID={expanded}
-                handleDelete={handleDeleteRequest}
-              />
+          .completedJobs()
+          .slice(0, 5)
+          .map((job) => (
+            <AccordionJob
+            key={job.id}
+            job={job}
+            handleChange={handleChange}
+            expandedID={expanded}
+            handleDelete={handleDeleteRequest}
+            />
             ))}
       </Card>
       <Dialog open={deleteConfirmOpen}>
