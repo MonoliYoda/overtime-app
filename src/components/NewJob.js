@@ -31,6 +31,11 @@ function NewJob(props) {
   const [equipmentRate, setEquipmentRate] = useState(0);
   const [notes, setNotes] = useState("");
   const [edting, setEdting] = useState(false);
+  // Error states for form validation
+  const [personalRateError, setPersonalRateError] = useState(false)
+  const [equipmentRateError, setEquipmentRateError] = useState(false)
+  const [endTimeError, setEndTimeError] = useState(false)
+  const [submitButtonEnable, setSubmitButtonEnable] = useState(true)
 
   const navigate = useNavigate();
   const filter = createFilterOptions();
@@ -39,6 +44,7 @@ function NewJob(props) {
 
   const textFieldStyle = {width: "100%", paddingRight: "1rem"}
 
+  // Keep local project list in sync with FB
   useEffect(() => {
     setUserProjects(fb.userProjects);
   }, [fb.userProjects]);
@@ -80,10 +86,19 @@ function NewJob(props) {
     }
   }, []);
 
+  // Disable submit button if any fields are errored
+  useEffect(() => {
+    if (!personalRateError && !equipmentRateError && !endTimeError) {
+      setSubmitButtonEnable(true)
+    } else {
+      setSubmitButtonEnable(false)
+    }
+  }, [personalRateError, equipmentRateError, endTimeError])
+  
+  // Make sure all datetimes have seconds set to zero
   function createTimeZeroSeconds(timeString) {
     let time = new Date(timeString);
     time.setSeconds(0);
-    console.log(time)
     return time
   }
 
@@ -117,6 +132,49 @@ function NewJob(props) {
     navigate("/");
   }
 
+  function handlePersonalRateChange(e) {
+    const inputValue = parseInt(e.target.value)
+    if (inputValue) {
+      setPersonalRate(inputValue)
+      if (validateRate(inputValue)) {
+        setPersonalRateError(false)
+      } else {
+        setPersonalRateError(true)
+      }
+    } else {
+      setPersonalRate("")
+      setPersonalRateError(false)
+    }
+  }
+
+  function handleEquipmentRateChange(e) {
+    const inputValue = parseInt(e.target.value)
+    if (inputValue) {
+      setEquipmentRate(inputValue)
+      if (validateRate(inputValue)) {
+        setEquipmentRateError(false)
+      } else {
+        setEquipmentRateError(true)
+      }
+    } else {
+      setEquipmentRate("")
+      setEquipmentRateError(false)
+    }
+  }
+
+  function handleStartTimeChange(val) {
+    setStartTime(val)
+  }
+
+  function handleEndTimeChange(val) {
+    setEndTime(val)
+    if (createTimeZeroSeconds(startTime) < createTimeZeroSeconds(endTime)) {
+      setEndTimeError(false)
+    } else {
+      setEndTimeError(true)
+    }
+  }
+
   function getOptLbl(option) {
     // Value selected with enter, right from the input
     if (typeof option === "string") {
@@ -144,6 +202,10 @@ function NewJob(props) {
     }
 
     return filtered;
+  }
+
+  function validateRate(rate) {
+    return rate < 0 ? false : true
   }
 
   return (
@@ -247,9 +309,7 @@ function NewJob(props) {
                     renderInput={(props) => <TextField {...props} style={textFieldStyle} />}
                     label="Start Time"
                     value={startTime}
-                    onChange={(newValue) => {
-                      setStartTime(newValue);
-                    }}
+                    onChange={handleStartTimeChange}
                   />
                 </Grid>
               <Grid item xs={6}>
@@ -258,20 +318,20 @@ function NewJob(props) {
                   label="Personal rate"
                   type="number"
                   value={personalRate}
-                  onChange={(e) => setPersonalRate(parseInt(e.target.value))}
+                  onChange={handlePersonalRateChange}
                   style={textFieldStyle}
+                  error={personalRateError}
                 />
               </Grid>
                 <Grid item xs={6}>
                   <DateTimePicker
                     clearable={true}
                     defaultValue={null}
-                    renderInput={(props) => <TextField {...props} style={textFieldStyle} />}
+                    renderInput={(props) => <TextField {...props} style={textFieldStyle} error={endTimeError} />}
                     label="End Time (blank if ongoing)"
                     value={endTime}
-                    onChange={(newValue) => {
-                      setEndTime(newValue);
-                    }}
+                    onChange={handleEndTimeChange}
+                    
                   />
                 </Grid>
               </LocalizationProvider>
@@ -281,8 +341,9 @@ function NewJob(props) {
                   label="Equipment rate"
                   type="number"
                   value={equipmentRate}
-                  onChange={(e) => setEquipmentRate(parseInt(e.target.value))}
+                  onChange={handleEquipmentRateChange}
                   style={textFieldStyle}
+                  error={equipmentRateError}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -338,7 +399,7 @@ function NewJob(props) {
                 <Button variant="outlined" onClick={() => navigate("/")}>
                   Cancel
                 </Button>
-                <Button variant="contained" onClick={handleSubmit}>
+                <Button variant="contained" disabled={!submitButtonEnable} onClick={handleSubmit}>
                   OK
                 </Button>
               </Grid>

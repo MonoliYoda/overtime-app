@@ -145,8 +145,8 @@ export function FirebaseProvider({ children }) {
       startTime: Timestamp.fromDate(data.startTime),
       endTime: data.endTime ? Timestamp.fromDate(data.endTime) : null,
       ovtScheme: ovtScheme,
-      personalRate: data.personalRate || 0,
-      equipmentRate: data.equipmentRate || 0,
+      personalRate: data.personalRate || "",
+      equipmentRate: data.equipmentRate || "",
       notes: data.notes || "",
     };
     const docRef = await addDoc(

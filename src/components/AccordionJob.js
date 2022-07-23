@@ -61,7 +61,7 @@ function AccordionJob(props) {
       job.ovtScheme.scheme,
       runtime
     );
-    return job.personalRate + job.equipmentRate + overtimePay;
+    return (job.personalRate || 0) + (job.equipmentRate || 0) + overtimePay;
   }
 
   return (
@@ -141,13 +141,13 @@ function AccordionJob(props) {
             <ListItem>
               <ListItemText primary="Dniówka"></ListItemText>
               <ListItemSecondaryAction>
-                {job.personalRate}
+                {job.personalRate || 0}
               </ListItemSecondaryAction>
             </ListItem>
             <ListItem>
               <ListItemText primary="Sprzęt"></ListItemText>
               <ListItemSecondaryAction>
-                {job.equipmentRate}
+                {job.equipmentRate || 0}
               </ListItemSecondaryAction>
             </ListItem>
             <ListItem>
