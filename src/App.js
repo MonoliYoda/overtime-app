@@ -1,24 +1,68 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import {
+  Container,
+  createTheme,
+  CssBaseline,
+  ThemeProvider,
+} from "@mui/material";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { FirebaseProvider } from "./contexts/FirebaseContext";
+import Signup from "./components/Signup";
+import Navbar from "./components/Navbar";
+import Dashboard from "./components/Dashboard";
+import Login from "./components/Login";
+import Logout from "./components/Logout";
+import NewJob from "./components/NewJob";
+import History from "./components/History";
+import AppBarTop from "./components/AppBarTop";
+import Statistics from "./components/Statistics";
 
 function App() {
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+    },
+  });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <FirebaseProvider>
+          <Router>
+            <Container sx={{}}>
+              <AppBarTop />
+              <Routes>
+                <Route exact path="/" element={<Dashboard />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/stats" element={<Statistics />} />
+                <Route
+                  path="/new"
+                  element={
+                    <>
+                      <Dashboard />
+                      <NewJob />
+                    </>
+                  }
+                />
+                <Route
+                  path="/edit/:jobId"
+                  element={
+                    <>
+                      <Dashboard />
+                      <NewJob />
+                    </>
+                  }
+                />
+              </Routes>
+              <Navbar />
+            </Container>
+          </Router>
+        </FirebaseProvider>
+      </ThemeProvider>
+    </>
   );
 }
 
