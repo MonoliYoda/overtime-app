@@ -1,4 +1,10 @@
-# Getting Started with Create React App
+# Overtime Manager
+
+This is an overtime tracker for film crews. It was born out of the necessity for easly keeping track of overtime on film sets with the peculiar salary rules in the Polish film industry.
+
+## Technology Stack
+
+This project utilizes ReactJS as the frontend, with MaterialUI for styling, as well as react-router and react-scroll for additional features. It uses Firebase as the backend, but can be easily moved to a different service as the backend interface is easily adaptable.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
